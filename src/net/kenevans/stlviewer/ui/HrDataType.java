@@ -11,15 +11,43 @@ import org.jfree.data.time.TimeSeriesCollection;
  */
 
 /**
- * HrDataType manages a heart rate data type.
+ * HrDataType manages a heart rate data type. It differs from DataType by
+ * implementing zones in the plot.
  * 
  * @author Kenneth Evans, Jr.
  */
 public class HrDataType extends DataType
 {
-    public HrDataType(XYPlot plot, String name, int index, Paint paint,
+    /**
+     * HrDataType constructor that sets axisIndex the same as datasetIndex. Just
+     * calls super().
+     * 
+     * @param plot
+     * @param name
+     * @param datasetIndex
+     * @param paint
+     * @param visible
+     * @see DataType#DataType(XYPlot, String, int, Paint, boolean)
+     */
+    public HrDataType(XYPlot plot, String name, int datasetIndex, Paint paint,
         boolean visible) {
-        super(plot, name, index, paint, visible);
+        super(plot, name, datasetIndex, paint, visible);
+    }
+
+    /**
+     * HrDataType constructor. Just calls super().
+     * 
+     * @param plot
+     * @param name
+     * @param datasetIndex
+     * @param axisIndex
+     * @param paint
+     * @param visible
+     * @see DataType#DataType(XYPlot, String, int, int, Paint, boolean)
+     */
+    public HrDataType(XYPlot plot, String name, int datasetIndex,
+        int axisIndex, Paint paint, boolean visible) {
+        super(plot, name, datasetIndex, axisIndex, paint, visible);
     }
 
     /*

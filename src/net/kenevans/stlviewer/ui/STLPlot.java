@@ -52,7 +52,7 @@ public class STLPlot implements IConstants
     private ChartPanel chartPanel;
 
     /** The STLViewer that contains this plot. */
-    private STLViewer viewer;
+//    private STLViewer viewer;
 
     /** The subtitle */
     private TextTitle subTitle;
@@ -324,7 +324,7 @@ public class STLPlot implements IConstants
             subTitle.setText(model.getFileName());
             chart.addSubtitle(subTitle);
 
-            int index;
+            int datasetIndex, axisIndex;
             long[] timeVals;
             double[] yVals;
             XYPlot plot;
@@ -332,7 +332,8 @@ public class STLPlot implements IConstants
                 if(!type.getVisible()) {
                     continue;
                 }
-                index = type.getIndex();
+                datasetIndex = type.getDatasetIndex();
+                axisIndex = type.getAxisIndex();
                 // Axis
                 NumberAxis axis = new NumberAxis(type.getName());
                 axis.setFixedDimension(10.0);
@@ -343,37 +344,37 @@ public class STLPlot implements IConstants
                 // Make the label font be the same as for the primary axis
                 // axis.setLabelFont(font);
                 plot = type.getPlot();
-                plot.setRangeAxis(index, axis);
-                // type.getPlot().setRangeAxisLocation(index,
+                plot.setRangeAxis(axisIndex, axis);
+                // type.getPlot().setRangeAxisLocation(datasetIndex,
                 // AxisLocation.BOTTOM_OR_LEFT);
-                switch(index) {
+                switch(datasetIndex) {
                 case HR_INDEX:
                     timeVals = model.getHrTimeVals();
                     yVals = model.getHrVals();
                     type.createDataset(timeVals, yVals);
-                    plot.setDataset(index, type.getDataset());
-                    plot.mapDatasetToRangeAxis(index, index);
-                    plot.setRenderer(index, type.getRenderer());
+                    plot.setDataset(datasetIndex, type.getDataset());
+                    plot.mapDatasetToRangeAxis(datasetIndex, axisIndex);
+                    plot.setRenderer(datasetIndex, type.getRenderer());
                     break;
                 case SPEED_INDEX:
                     timeVals = model.getSpeedTimeVals();
                     yVals = model.getSpeedVals();
                     // yVals = MathUtils.medianFilter(model.getEleVals(), 10);
                     type.createDataset(timeVals, yVals);
-                    plot.setDataset(index, type.getDataset());
-                    plot.mapDatasetToRangeAxis(index, index);
-                    plot.setRenderer(index, type.getRenderer());
+                    plot.setDataset(datasetIndex, type.getDataset());
+                    plot.mapDatasetToRangeAxis(datasetIndex, axisIndex);
+                    plot.setRenderer(datasetIndex, type.getRenderer());
                     break;
                 case ELE_INDEX:
                     timeVals = model.getEleTimeVals();
                     yVals = model.getEleVals();
                     type.createDataset(timeVals, yVals);
-                    plot.setDataset(index, type.getDataset());
-                    plot.mapDatasetToRangeAxis(index, index);
-                    plot.setRenderer(index, type.getRenderer());
+                    plot.setDataset(datasetIndex, type.getDataset());
+                    plot.mapDatasetToRangeAxis(datasetIndex, axisIndex);
+                    plot.setRenderer(datasetIndex, type.getRenderer());
                     break;
                 default:
-                    Utils.errMsg("Invalid data set index:" + index);
+                    Utils.errMsg("Invalid data set datasetIndex:" + datasetIndex);
                     break;
                 }
             }

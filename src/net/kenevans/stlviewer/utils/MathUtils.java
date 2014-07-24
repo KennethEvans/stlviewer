@@ -11,8 +11,8 @@ public class MathUtils
      * >http://www.vogella.com/articles/JavaAlgorithmsQuicksort/article.html<a>
      * 
      * @param array The array to sort.
-     * @param low Starting index of the part of the array to sort.
-     * @param low Ending index of the part of the array to sort.
+     * @param low Starting datasetIndex of the part of the array to sort.
+     * @param low Ending datasetIndex of the part of the array to sort.
      */
     public static void quickSort(double[] array, int low, int high) {
         int i = low, j = high;

@@ -25,7 +25,8 @@ import org.jfree.data.time.TimeSeriesCollection;
 public class DataType implements IConstants
 {
     protected String name;
-    protected int index;
+    protected int datasetIndex;
+    protected int axisIndex;
     protected Paint paint;
     protected boolean visible;
 
@@ -34,18 +35,35 @@ public class DataType implements IConstants
     protected XYLineAndShapeRenderer renderer;
 
     /**
-     * DataType constructor.
+     * DataType constructor that sets the axisIndex the same as the
+     * datasetIndex.
      * 
      * @param name
-     * @param index
+     * @param datasetIndex
      * @param paint
      * @param visible
      */
-    public DataType(XYPlot plot, String name, int index, Paint paint,
+    public DataType(XYPlot plot, String name, int datasetIndex, Paint paint,
         boolean visible) {
+        this(plot, name, datasetIndex, datasetIndex, paint, visible);
+    }
+
+    /**
+     * DataType constructor.
+     * 
+     * @param plot
+     * @param name
+     * @param datasetIndex
+     * @param axisIndex
+     * @param paint
+     * @param visible
+     */
+    public DataType(XYPlot plot, String name, int datasetIndex, int axisIndex,
+        Paint paint, boolean visible) {
         this.plot = plot;
         this.name = name;
-        this.index = index;
+        this.datasetIndex = datasetIndex;
+        this.axisIndex = axisIndex;
         this.paint = paint;
         this.visible = visible;
     }
@@ -97,17 +115,31 @@ public class DataType implements IConstants
     }
 
     /**
-     * @return The value of index.
+     * @return The value of datasetIndex.
      */
-    public int getIndex() {
-        return index;
+    public int getDatasetIndex() {
+        return datasetIndex;
     }
 
     /**
-     * @param index The new value for index.
+     * @param datasetIndex The new value for datasetIndex.
      */
-    public void setIndex(int index) {
-        this.index = index;
+    public void setDatasetIndex(int datasetIndex) {
+        this.datasetIndex = datasetIndex;
+    }
+
+    /**
+     * @return The value of axisIndex.
+     */
+    public int getAxisIndex() {
+        return axisIndex;
+    }
+
+    /**
+     * @param axisIndex The new value for axisIndex.
+     */
+    public void setAxisIndex(int axisIndex) {
+        this.axisIndex = axisIndex;
     }
 
     /**
