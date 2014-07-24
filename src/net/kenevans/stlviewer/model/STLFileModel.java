@@ -2,6 +2,7 @@ package net.kenevans.stlviewer.model;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -18,6 +19,7 @@ import net.kenevans.gpx.TrkType;
 import net.kenevans.gpx.TrksegType;
 import net.kenevans.gpx.WptType;
 import net.kenevans.parser.GPXParser;
+import net.kenevans.stlviewer.utils.GpxUtils;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -36,8 +38,12 @@ public class STLFileModel implements IConstants
 {
     private String fileName;
     private GpxType gpx;
-    long[] timeVals;
+    long[] hrTimeVals;
     double[] hrVals;
+    long[] speedTimeVals;
+    double[] speedVals;
+    long[] timeVals;
+    double[] eleVals;
     int nTracks;
     int nSegments;
     int nTrackPoints;
@@ -56,7 +62,12 @@ public class STLFileModel implements IConstants
             Utils.excMsg("Error reading " + fileName, ex);
         }
         ArrayList<Long> timeValsArray = new ArrayList<Long>();
+        ArrayList<Long> speedTimeValsArray = new ArrayList<Long>();
+        ArrayList<Double> speedValsArray = new ArrayList<Double>();
+        ArrayList<Double> eleValsArray = new ArrayList<Double>();
+        ArrayList<Long> hrTimeValsArray = new ArrayList<Long>();
         ArrayList<Double> hrValsArray = new ArrayList<Double>();
+        BigDecimal bdVal;
         double val;
         long time;
 
@@ -72,14 +83,23 @@ public class STLFileModel implements IConstants
                     // Use NaN to make a break between segments but don't count
                     // as a HR value
                     hrValsArray.add(Double.NaN);
+                    hrTimeValsArray.add(lastTimeValue);
+                    speedValsArray.add(Double.NaN);
+                    speedTimeValsArray.add(lastTimeValue);
+                    eleValsArray.add(Double.NaN);
                     timeValsArray.add(lastTimeValue);
                 }
-                List<WptType> waypoints = trackSegment.getTrkpt();
-                for(WptType waypoint : waypoints) {
+                double deltaLength, speed;
+                double prevTime = -1;
+                double deltaTime;
+                double lat = 0, lon = 0, prevLat = 0, prevLon = 0;
+                List<WptType> trackPoints = trackSegment.getTrkpt();
+                for(WptType tpt : trackPoints) {
                     nTrackPoints++;
-                    XMLGregorianCalendar xgcal = waypoint.getTime();
+                    XMLGregorianCalendar xgcal = tpt.getTime();
                     GregorianCalendar gcal = xgcal.toGregorianCalendar(
                         TimeZone.getTimeZone("GMT"), null, null);
+                    // Consider gcal.getTimeInMillis()
                     time = gcal.getTime().getTime();
                     if(time < startTime) {
                         startTime = time;
@@ -87,7 +107,29 @@ public class STLFileModel implements IConstants
                     if(time > endTime) {
                         endTime = time;
                     }
-                    ExtensionsType extensions = waypoint.getExtensions();
+                    timeValsArray.add(time);
+                    // Speed
+                    if(prevTime != -1) {
+                        // Should be the second track point
+                        lat = tpt.getLat().doubleValue();
+                        lon = tpt.getLon().doubleValue();
+                        deltaLength = GpxUtils.greatCircleDistance(prevLat,
+                            prevLon, lat, lon);
+                        deltaTime = time - prevTime;
+                        speed = deltaTime > 0 ? 1000. * deltaLength / deltaTime
+                            : 0;
+                        speedValsArray.add(speed);
+                        speedTimeValsArray.add(time
+                            - Math.round(.5 * deltaTime));
+                    }
+                    prevTime = time;
+                    prevLat = lat;
+                    prevLon = lon;
+                    // Ele
+                    bdVal = tpt.getEle();
+                    eleValsArray.add(bdVal.doubleValue());
+                    // Extensions
+                    ExtensionsType extensions = tpt.getExtensions();
                     if(extensions != null) {
                         List<Object> objects = extensions.getAny();
                         for(Object object : objects) {
@@ -109,7 +151,7 @@ public class STLFileModel implements IConstants
                                             val = Double.NaN;
                                         }
                                         hrValsArray.add(val);
-                                        timeValsArray.add(time);
+                                        hrTimeValsArray.add(time);
                                         lastTimeValue = time;
                                         if(time < startHrTime) {
                                             startHrTime = time;
@@ -128,17 +170,84 @@ public class STLFileModel implements IConstants
                 }
             }
         }
+        // HR
         hrVals = new double[hrValsArray.size()];
         int index = 0;
         for(Double dVal : hrValsArray) {
             hrVals[index++] = dVal.doubleValue();
+        }
+        hrTimeVals = new long[hrTimeValsArray.size()];
+        index = 0;
+        for(Long lVal : hrTimeValsArray) {
+            hrTimeVals[index++] = lVal.longValue();
+        }
+        // Speed
+        speedVals = new double[speedValsArray.size()];
+        index = 0;
+        for(Double dVal : speedValsArray) {
+            speedVals[index++] = dVal.doubleValue();
+        }
+        speedTimeVals = new long[speedTimeValsArray.size()];
+        index = 0;
+        for(Long lVal : speedTimeValsArray) {
+            speedTimeVals[index++] = lVal.longValue();
+        }
+        // Ele
+        eleVals = new double[eleValsArray.size()];
+        index = 0;
+        for(Double dVal : eleValsArray) {
+            eleVals[index++] = dVal.doubleValue();
         }
         timeVals = new long[timeValsArray.size()];
         index = 0;
         for(Long lVal : timeValsArray) {
             timeVals[index++] = lVal.longValue();
         }
+
+        // // DEBUG
+        // dumpTimeArray("hrTimeVals", hrTimeVals);
+        // dumpTimeArray("speedTimeVals", hrTimeVals);
+        // dumpTimeArray("timeVals", hrTimeVals);
+        //
+        // dumpDoubleArray("hrVals", hrVals);
+        // dumpDoubleArray("speedVals", speedVals);
+        // dumpDoubleArray("eleVals", eleVals);
     }
+
+    // // DEBUG
+    // void dumpTimeArray(String name, long[] array) {
+    // System.out.println(name + ": " + array + " [" + array.length + "]");
+    // int len = array.length;
+    // long max = Long.MIN_VALUE;
+    // long min = Long.MAX_VALUE;
+    // for(int i = 0; i < len; i++) {
+    // if(array[i] > max) {
+    // max = array[i];
+    // }
+    // if(array[i] < min) {
+    // min = array[i];
+    // }
+    // }
+    // System.out.println("  Min: " + min + "  " + new Date(min) + "  Max: "
+    // + max + "  " + new Date(max));
+    // }
+
+    // // DEBUG
+    // void dumpDoubleArray(String name, double[] array) {
+    // System.out.println(name + ": " + array + " [" + array.length + "]");
+    // int len = array.length;
+    // double max = -Double.MAX_VALUE;
+    // double min = Double.MAX_VALUE;
+    // for(int i = 0; i < len; i++) {
+    // if(array[i] > max) {
+    // max = array[i];
+    // }
+    // if(array[i] < min) {
+    // min = array[i];
+    // }
+    // }
+    // System.out.println("  Min: " + min + "  Max: " + max);
+    // }
 
     /**
      * Prints information about the tracks.
@@ -287,10 +396,10 @@ public class STLFileModel implements IConstants
     }
 
     /**
-     * @return The value of timeVals.
+     * @return The value of hrTimeVals.
      */
-    public long[] getTimeVals() {
-        return timeVals;
+    public long[] getHrTimeVals() {
+        return hrTimeVals;
     }
 
     /**
@@ -298,6 +407,41 @@ public class STLFileModel implements IConstants
      */
     public double[] getHrVals() {
         return hrVals;
+    }
+
+    /**
+     * @return The value of speedTimeVals.
+     */
+    public long[] getSpeedTimeVals() {
+        return speedTimeVals;
+    }
+
+    /**
+     * @return The value of speedVals.
+     */
+    public double[] getSpeedVals() {
+        return speedVals;
+    }
+
+    /**
+     * @return The value of timeVals.
+     */
+    public long[] getTimeVals() {
+        return timeVals;
+    }
+
+    /**
+     * @return The value of timeVals.
+     */
+    public long[] getEleTimeVals() {
+        return timeVals;
+    }
+
+    /**
+     * @return The value of eleVals.
+     */
+    public double[] getEleVals() {
+        return eleVals;
     }
 
     /**

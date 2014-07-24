@@ -1,11 +1,11 @@
 package net.kenevans.stlviewer.ui;
 
+import java.awt.Color;
 import java.awt.Font;
-import java.awt.Paint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Date;
 
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
@@ -17,10 +17,10 @@ import net.kenevans.stlviewer.model.STLFileModel;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.title.TextTitle;
-import org.jfree.data.time.Minute;
-import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 
 /*
@@ -40,9 +40,6 @@ public class STLPlot implements IConstants
     // /** Value for the domain maximum. */
     // private static final double XMAX = 30;
 
-    /** The TimeSeriesCollection used in the plot. It is filled out as needed. */
-    private TimeSeriesCollection dataset = new TimeSeriesCollection();
-
     // /** Used to retain the domain limits for resetting the plot. */
     // private double defaultXMax;
     // /** Used to retain the range limits for resetting the plot. */
@@ -58,10 +55,13 @@ public class STLPlot implements IConstants
     private STLViewer viewer;
 
     /** The subtitle */
-    TextTitle subTitle;
+    private TextTitle subTitle;
+
+    /** The array of types */
+    private DataType[] dataTypes;
 
     public STLPlot(STLViewer viewer) {
-        this.viewer = viewer;
+        // this.viewer = viewer;
     }
 
     /**
@@ -85,73 +85,28 @@ public class STLPlot implements IConstants
         // DefaultDrawingSupplier.DEFAULT_OUTLINE_STROKE_SEQUENCE,
         // DefaultDrawingSupplier.DEFAULT_SHAPE_SEQUENCE));
 
-        // Define the before extending the popup menu
+        // Define the panel before extending the popup menu
         chartPanel = new ChartPanel(chart);
 
         // Add to the popup menu
         extendPopupMenu();
 
+        XYPlot plot = chart.getXYPlot();
+        dataTypes = new DataType[] {
+            // Don't use Boolean.getBoolean. It gets a system value with that
+            // name
+            new HrDataType(plot, D_HR_NAME, HR_INDEX, Color.decode(D_HR_COLOR),
+                Boolean.parseBoolean(D_HR_VISIBILITY)),
+            new DataType(plot, D_SPEED_NAME, SPEED_INDEX,
+                Color.decode(D_SPEED_COLOR),
+                Boolean.parseBoolean(D_SPEED_VISIBILITY)),
+            new DataType(plot, D_ELE_NAME, ELE_INDEX,
+                Color.decode(D_ELE_COLOR),
+                Boolean.parseBoolean(D_ELE_VISIBILITY)),
+        // Comment to keep brace on a separate line
+        };
+
         return chart;
-    }
-
-    private TimeSeriesCollection createDataset() {
-        if(viewer.getModel() == null) {
-            return null;
-        }
-        clearPlot();
-
-        double[] hrVals = viewer.getModel().getHrVals();
-        long[] timeVals = viewer.getModel().getTimeVals();
-        plot("HR", hrColor, timeVals, hrVals);
-
-        // Do the zones
-        int nPoints = timeVals.length;
-        if(nPoints > 2 && timeVals[0] != timeVals[nPoints - 1]) {
-            int nZones = hrZones.length;
-            long[] zoneTimeVals = {timeVals[0], timeVals[nPoints - 1]};
-            // Only need an array of one since the value is constant
-            double[] zoneVals = new double[1];
-            for(int i = 0; i < nZones; i++) {
-                zoneVals[0] = hrZones[i];
-                plot(String.format(BOUNDARY_SERIES_NAME_PREFIX + "%.0f",
-                    hrZones[i]), zoneColors[i], zoneTimeVals, zoneVals);
-            }
-        }
-
-        setSeriesMarkers(dataset, showMarkers);
-        return dataset;
-    }
-
-    /**
-     * General routine to add one or more series to a plot.
-     * 
-     * @param seriesName The name of the series.
-     * @param paint A Paint representing the color of the series.
-     * @param timeVals The array of time values.
-     * @param yVals The array of y values. If the length of this array is 1, it
-     *            is used as a constant value for all x values. Otherwise it
-     *            should be nSeries times as long as the length of the x values.
-     *            If it is shorter, then null will be used for the remaining
-     *            plot values.
-     */
-    private void plot(String seriesName, Paint paint, long[] timeVals,
-        double[] yVals) {
-        int nPoints = timeVals.length;
-        int nDataPoints = yVals.length;
-        XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer)chartPanel
-            .getChart().getXYPlot().getRenderer();
-        TimeSeries series = new TimeSeries(seriesName);
-
-        for(int n = 0; n < nPoints; n++) {
-            if(nDataPoints == 1) {
-                series.addOrUpdate(new Minute(new Date(timeVals[n])), yVals[0]);
-            } else {
-                series.addOrUpdate(new Minute(new Date(timeVals[n])), yVals[n]);
-            }
-        }
-        dataset.addSeries(series);
-        int seriesIndex = dataset.indexOf(series);
-        renderer.setSeriesPaint(seriesIndex, paint);
     }
 
     /**
@@ -208,77 +163,223 @@ public class STLPlot implements IConstants
             }
         });
         menu.add(item);
+
+        separator = new JSeparator();
+        menu.add(separator);
+
+        final JCheckBoxMenuItem hrVisibleItem = new JCheckBoxMenuItem("HR",
+            Boolean.parseBoolean(D_HR_VISIBILITY));
+        hrVisibleItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                boolean selected = ((JCheckBoxMenuItem)ae.getSource())
+                    .isSelected();
+                int index = HR_INDEX;
+                DataType type = dataTypes[index];
+                type.setVisible(selected);
+                XYPlot plot = type.getPlot();
+                plot.getRangeAxis(index).setVisible(selected);
+                plot.setDataset(index, selected ? type.getDataset() : null);
+            }
+        });
+        menu.add(hrVisibleItem);
+
+        final JCheckBoxMenuItem speedVisibleItem = new JCheckBoxMenuItem(
+            "Speed", Boolean.parseBoolean(D_SPEED_VISIBILITY));
+        speedVisibleItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                boolean selected = ((JCheckBoxMenuItem)ae.getSource())
+                    .isSelected();
+                int index = SPEED_INDEX;
+                DataType type = dataTypes[index];
+                type.setVisible(selected);
+                XYPlot plot = type.getPlot();
+                plot.getRangeAxis(index).setVisible(selected);
+                plot.setDataset(index, selected ? type.getDataset() : null);
+            }
+        });
+        menu.add(speedVisibleItem);
+
+        final JCheckBoxMenuItem eleVisibleItem = new JCheckBoxMenuItem(
+            "Elevation", Boolean.parseBoolean(D_ELE_VISIBILITY));
+        eleVisibleItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                boolean selected = ((JCheckBoxMenuItem)ae.getSource())
+                    .isSelected();
+                int index = ELE_INDEX;
+                DataType type = dataTypes[index];
+                type.setVisible(selected);
+                XYPlot plot = type.getPlot();
+                plot.getRangeAxis(index).setVisible(selected);
+                plot.setDataset(index, selected ? type.getDataset() : null);
+            }
+        });
+        menu.add(eleVisibleItem);
     }
+
+    // public String info() {
+    // String info = "Plot info" + LS;
+    // XYPlot plot = chartPanel.getChart().getXYPlot();
+    // int nDatasets = plot.getDatasetCount();
+    // info += "DatasetCount=" + plot.getDatasetCount() + LS;
+    // TimeSeriesCollection dataset;
+    // Series series;
+    // int nSeries = 0;
+    // for(int i = 0; i < nDatasets; i++) {
+    // dataset = (TimeSeriesCollection)plot.getDataset(i);
+    // nSeries = dataset.getSeriesCount();
+    // for(int j = 0; j < nSeries; j++) {
+    // series = dataset.getSeries(j);
+    // }
+    // }
+    //
+    // return info;
+    // }
 
     /**
      * Removes all series from the plot.
      */
     public void clearPlot() {
-        try {
-            dataset.removeAllSeries();
-        } catch(Exception ex) {
-            Utils.excMsg("Error clearing plot", ex);
-        }
-    }
-
-    /**
-     * Toggles the markers on series that are not HR boundaries.
-     */
-    public void toggleMarkers() {
-        showMarkers = !showMarkers;
-        setSeriesMarkers(dataset, showMarkers);
-        ;
-    }
-
-    /**
-     * Sets the markers for all series depending on showMarkers.
-     */
-    public void setSeriesMarkers(TimeSeriesCollection dataset,
-        boolean showMarkers) {
-        int nSeries = dataset.getSeriesCount();
-        if(nSeries == 0) {
+        if(dataTypes == null) {
             return;
         }
-        // Get the renderer
-        XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer)chartPanel
-            .getChart().getXYPlot().getRenderer();
-        // Change for the series that are not boundaries
-        String seriesName;
-        for(int i = 0; i < nSeries; i++) {
-            seriesName = (String)dataset.getSeries(i).getKey();
-            if(!seriesName.startsWith(BOUNDARY_SERIES_NAME_PREFIX)) {
-                renderer.setSeriesShapesVisible(i, showMarkers);
+        TimeSeriesCollection dataset;
+        for(DataType type : dataTypes) {
+            dataset = type.getDataset();
+            if(dataset != null) {
+                try {
+                    ((TimeSeriesCollection)dataset).removeAllSeries();
+                } catch(Exception ex) {
+                    Utils.excMsg("Error clearing plot", ex);
+                }
             }
         }
     }
 
     /**
-     * Fills in the chart with the data from the given strip.
-     * 
-     * @param strip
+     * Toggles the markers.
      */
-    // TODO
+    public void toggleMarkers() {
+        showMarkers = !showMarkers;
+        setAllMarkers();
+    }
+
+    /**
+     * Sets all the markers to the current marker visibility.
+     */
+    public void setAllMarkers() {
+        if(dataTypes == null) {
+            return;
+        }
+        TimeSeriesCollection dataset;
+        XYLineAndShapeRenderer renderer;
+        for(DataType type : dataTypes) {
+            dataset = type.getDataset();
+            renderer = type.getRenderer();
+            if(dataset != null) {
+                try {
+                    setSeriesMarkers((TimeSeriesCollection)dataset, renderer,
+                        showMarkers);
+                } catch(Exception ex) {
+                    Utils.excMsg("Error clearing plot", ex);
+                }
+            }
+        }
+    }
+
+    /**
+     * Sets the markers for all series that are not HR boundaries.
+     * 
+     * @param dataset
+     * @param showMarkers
+     */
+    public void setSeriesMarkers(TimeSeriesCollection dataset,
+        XYLineAndShapeRenderer renderer, boolean showMarkers) {
+        int nSeries = dataset.getSeriesCount();
+        if(nSeries == 0) {
+            return;
+        }
+        // Change for the series that are not boundaries
+        // String seriesName;
+        for(int i = 0; i < nSeries; i++) {
+            // seriesName = (String)dataset.getSeries(i).getKey();
+            // if(!seriesName.startsWith(BOUNDARY_SERIES_NAME_PREFIX)) {
+            renderer.setSeriesShapesVisible(i, showMarkers);
+            // }
+        }
+    }
+
+    /**
+     * Fills in the chart with the data from the given model.
+     * 
+     * @param model
+     */
     public void addModelToChart(STLFileModel model) {
+        if(dataTypes == null) {
+            Utils.errMsg("No data types defined");
+            return;
+        }
         try {
-            createDataset();
             JFreeChart chart = chartPanel.getChart();
-            chart.getXYPlot().setDataset(dataset);
             chart.removeSubtitle(subTitle);
             subTitle.setText(model.getFileName());
             chart.addSubtitle(subTitle);
 
-            // Set the axis limits in the plot
-            // JFreeChart chart = chartPanel.getChart();
-            // chart.getXYPlot().getRangeAxis().setRange(0, totalHeight);
-            // chart.getXYPlot().getRangeAxis()
-            // .setRange(-.5 * totalHeight, .5 * totalHeight);
-            // chart.getXYPlot().getDomainAxis().setRange(0, xMax);
-
-            // Plot the data
-            // plot("Segment", stripColor, nSubPlots, totalHeight, .5, xVals,
-            // data);
+            int index;
+            long[] timeVals;
+            double[] yVals;
+            XYPlot plot;
+            for(DataType type : dataTypes) {
+                if(!type.getVisible()) {
+                    continue;
+                }
+                index = type.getIndex();
+                // Axis
+                NumberAxis axis = new NumberAxis(type.getName());
+                axis.setFixedDimension(10.0);
+                axis.setAutoRangeIncludesZero(false);
+                axis.setAutoRange(true);
+                axis.setLabelPaint(type.getPaint());
+                axis.setTickLabelPaint(type.getPaint());
+                // Make the label font be the same as for the primary axis
+                // axis.setLabelFont(font);
+                plot = type.getPlot();
+                plot.setRangeAxis(index, axis);
+                // type.getPlot().setRangeAxisLocation(index,
+                // AxisLocation.BOTTOM_OR_LEFT);
+                switch(index) {
+                case HR_INDEX:
+                    timeVals = model.getHrTimeVals();
+                    yVals = model.getHrVals();
+                    type.createDataset(timeVals, yVals);
+                    plot.setDataset(index, type.getDataset());
+                    plot.mapDatasetToRangeAxis(index, index);
+                    plot.setRenderer(index, type.getRenderer());
+                    break;
+                case SPEED_INDEX:
+                    timeVals = model.getSpeedTimeVals();
+                    yVals = model.getSpeedVals();
+                    // yVals = MathUtils.medianFilter(model.getEleVals(), 10);
+                    type.createDataset(timeVals, yVals);
+                    plot.setDataset(index, type.getDataset());
+                    plot.mapDatasetToRangeAxis(index, index);
+                    plot.setRenderer(index, type.getRenderer());
+                    break;
+                case ELE_INDEX:
+                    timeVals = model.getEleTimeVals();
+                    yVals = model.getEleVals();
+                    type.createDataset(timeVals, yVals);
+                    plot.setDataset(index, type.getDataset());
+                    plot.mapDatasetToRangeAxis(index, index);
+                    plot.setRenderer(index, type.getRenderer());
+                    break;
+                default:
+                    Utils.errMsg("Invalid data set index:" + index);
+                    break;
+                }
+            }
+            setAllMarkers();
         } catch(Exception ex) {
-            Utils.excMsg("Error adding profile to plot", ex);
+            Utils.excMsg("Error adding data to plot", ex);
             ex.printStackTrace();
         }
     }
@@ -288,6 +389,13 @@ public class STLPlot implements IConstants
      */
     public ChartPanel getChartPanel() {
         return chartPanel;
+    }
+
+    /**
+     * @return The value of dataTypes.
+     */
+    public DataType[] getDataTypes() {
+        return dataTypes;
     }
 
 }
