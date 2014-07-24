@@ -52,7 +52,7 @@ public class STLPlot implements IConstants
     private ChartPanel chartPanel;
 
     /** The STLViewer that contains this plot. */
-//    private STLViewer viewer;
+    // private STLViewer viewer;
 
     /** The subtitle */
     private TextTitle subTitle;
@@ -173,12 +173,14 @@ public class STLPlot implements IConstants
             public void actionPerformed(ActionEvent ae) {
                 boolean selected = ((JCheckBoxMenuItem)ae.getSource())
                     .isSelected();
-                int index = HR_INDEX;
-                DataType type = dataTypes[index];
+                int datasetIndex = HR_INDEX;
+                DataType type = dataTypes[datasetIndex];
+                int axisIndex = type.getDatasetIndex();
                 type.setVisible(selected);
                 XYPlot plot = type.getPlot();
-                plot.getRangeAxis(index).setVisible(selected);
-                plot.setDataset(index, selected ? type.getDataset() : null);
+                plot.getRangeAxis(axisIndex).setVisible(selected);
+                plot.setDataset(datasetIndex, selected ? type.getDataset()
+                    : null);
             }
         });
         menu.add(hrVisibleItem);
@@ -189,12 +191,14 @@ public class STLPlot implements IConstants
             public void actionPerformed(ActionEvent ae) {
                 boolean selected = ((JCheckBoxMenuItem)ae.getSource())
                     .isSelected();
-                int index = SPEED_INDEX;
-                DataType type = dataTypes[index];
+                int datasetIndex = SPEED_INDEX;
+                DataType type = dataTypes[datasetIndex];
+                int axisIndex = type.getDatasetIndex();
                 type.setVisible(selected);
                 XYPlot plot = type.getPlot();
-                plot.getRangeAxis(index).setVisible(selected);
-                plot.setDataset(index, selected ? type.getDataset() : null);
+                plot.getRangeAxis(axisIndex).setVisible(selected);
+                plot.setDataset(datasetIndex, selected ? type.getDataset()
+                    : null);
             }
         });
         menu.add(speedVisibleItem);
@@ -205,12 +209,14 @@ public class STLPlot implements IConstants
             public void actionPerformed(ActionEvent ae) {
                 boolean selected = ((JCheckBoxMenuItem)ae.getSource())
                     .isSelected();
-                int index = ELE_INDEX;
-                DataType type = dataTypes[index];
+                int datasetIndex = ELE_INDEX;
+                DataType type = dataTypes[datasetIndex];
+                int axisIndex = type.getDatasetIndex();
                 type.setVisible(selected);
                 XYPlot plot = type.getPlot();
-                plot.getRangeAxis(index).setVisible(selected);
-                plot.setDataset(index, selected ? type.getDataset() : null);
+                plot.getRangeAxis(axisIndex).setVisible(selected);
+                plot.setDataset(datasetIndex, selected ? type.getDataset()
+                    : null);
             }
         });
         menu.add(eleVisibleItem);
@@ -374,7 +380,8 @@ public class STLPlot implements IConstants
                     plot.setRenderer(datasetIndex, type.getRenderer());
                     break;
                 default:
-                    Utils.errMsg("Invalid data set datasetIndex:" + datasetIndex);
+                    Utils.errMsg("Invalid data set datasetIndex:"
+                        + datasetIndex);
                     break;
                 }
             }
