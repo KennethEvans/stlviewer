@@ -373,6 +373,24 @@ public class STLFileModel implements IConstants
             info += "HR: " + startHrDate + " to " + endHrDate + LS;
             info += String.format("HR Duration: %d hr %d min %d sec",
                 hrDurationHours, hrDurationMin, hrDurationSec) + LS;
+            double max = -Double.MAX_VALUE;
+            double min = Double.MAX_VALUE;
+            double sum = 0;
+            double val;
+            for(int i = 0; i < nHrValues; i++) {
+                val = hrVals[i];
+                if(Double.isNaN(val)) continue;
+                sum += val;
+                if(val > max) {
+                    max = val;
+                }
+                if(val < min) {
+                    min = val;
+                }
+            }
+            sum /= nHrValues;
+            info += String.format("HR Max=%.0f HR Min=%.0f HR Avg=%.1f",
+                max, min, sum) + LS;
         }
         info += nTracks + " Tracks" + "        " + nSegments + " Segments:"
             + LS;
