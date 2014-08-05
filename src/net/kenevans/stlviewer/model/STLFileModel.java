@@ -109,16 +109,18 @@ public class STLFileModel implements IConstants
                     }
                     timeValsArray.add(time);
                     // Speed
+                    lat = tpt.getLat().doubleValue();
+                    lon = tpt.getLon().doubleValue();
                     if(prevTime != -1) {
                         // Should be the second track point
-                        lat = tpt.getLat().doubleValue();
-                        lon = tpt.getLon().doubleValue();
                         deltaLength = GpxUtils.greatCircleDistance(prevLat,
                             prevLon, lat, lon);
                         deltaTime = time - prevTime;
                         speed = deltaTime > 0 ? 1000. * deltaLength / deltaTime
                             : 0;
-                        speedValsArray.add(speed);
+                        // Convert from m/sec to mi/hr
+                        speedValsArray.add(speed * GpxUtils.M2MI
+                            / GpxUtils.SEC2HR);
                         speedTimeValsArray.add(time
                             - Math.round(.5 * deltaTime));
                     }
@@ -127,7 +129,8 @@ public class STLFileModel implements IConstants
                     prevLon = lon;
                     // Ele
                     bdVal = tpt.getEle();
-                    eleValsArray.add(bdVal.doubleValue());
+                    // Convert from m to ft
+                    eleValsArray.add(bdVal.doubleValue() * GpxUtils.M2FT);
                     // Extensions
                     ExtensionsType extensions = tpt.getExtensions();
                     if(extensions != null) {
@@ -369,34 +372,79 @@ public class STLFileModel implements IConstants
         info += "Tracks: " + startDate + " to " + endDate + LS;
         info += String.format("Duration: %d hr %d min %d sec", durationHours,
             durationMin, durationSec) + LS;
+        double[] stats = null;
         if(nHrValues != 0) {
             info += "HR: " + startHrDate + " to " + endHrDate + LS;
             info += String.format("HR Duration: %d hr %d min %d sec",
                 hrDurationHours, hrDurationMin, hrDurationSec) + LS;
-            double max = -Double.MAX_VALUE;
-            double min = Double.MAX_VALUE;
-            double sum = 0;
-            double val;
-            for(int i = 0; i < nHrValues; i++) {
-                val = hrVals[i];
-                if(Double.isNaN(val)) continue;
-                sum += val;
-                if(val > max) {
-                    max = val;
-                }
-                if(val < min) {
-                    min = val;
-                }
+            stats = getStats(hrVals, hrTimeVals);
+            if(stats != null) {
+                info += String.format("HR Min=%.0f HR Max=%.0f HR Avg=%.1f",
+                    stats[0], stats[1], stats[2]) + LS;
             }
-            sum /= nHrValues;
-            info += String.format("HR Max=%.0f HR Min=%.0f HR Avg=%.1f",
-                max, min, sum) + LS;
+        }
+        if(speedVals.length != 0) {
+            stats = getStats(speedVals, speedTimeVals);
+            if(stats != null) {
+                info += String.format(
+                    "Speed Min=%.1f Speed Max=%.1f Speed Avg=%.1f mi/hr",
+                    stats[0], stats[1], stats[2])
+                    + LS;
+            }
+        }
+        if(eleVals.length != 0) {
+            stats = getStats(eleVals, timeVals);
+            if(stats != null) {
+                info += String.format(
+                    "Ele Min=%.0f Ele Max=%.0f Ele Avg=%.1f ft", stats[0],
+                    stats[1], stats[2])
+                    + LS;
+            }
         }
         info += nTracks + " Tracks" + "        " + nSegments + " Segments:"
             + LS;
         info += nTrackPoints + " Track Points" + "        " + nHrValues
             + " HR Values:" + LS;
         return info;
+    }
+
+    /**
+     * Gets the statistics from the given values and time values by averaging
+     * over the values, not over the actual time.
+     * 
+     * @param vals
+     * @param timeVals
+     * @return {min, max, avg} or null on error.
+     */
+    public static double[] getStats(double[] vals, long[] timeVals) {
+        // System.out.println("vals: " + vals.length + ", timeVals: "
+        // + timeVals.length);
+        if(vals.length != timeVals.length) {
+            Utils.errMsg("getStats: Array sizes (vals: " + vals.length
+                + ", timeVals: " + timeVals.length + ") do not match");
+            return null;
+        }
+        int len = vals.length;
+        if(len == 0) {
+            return new double[] {0, 0, 0};
+        }
+        double max = -Double.MAX_VALUE;
+        double min = Double.MAX_VALUE;
+        double sum = 0;
+        double val;
+        for(int i = 0; i < len; i++) {
+            val = vals[i];
+            if(Double.isNaN(val)) continue;
+            sum += val;
+            if(val > max) {
+                max = val;
+            }
+            if(val < min) {
+                min = val;
+            }
+        }
+        sum /= len;
+        return new double[] {min, max, sum};
     }
 
     /**

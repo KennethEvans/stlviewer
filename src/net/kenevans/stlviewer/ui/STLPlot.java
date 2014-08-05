@@ -365,7 +365,6 @@ public class STLPlot implements IConstants
                 case SPEED_INDEX:
                     timeVals = model.getSpeedTimeVals();
                     yVals = model.getSpeedVals();
-                    // yVals = MathUtils.medianFilter(model.getEleVals(), 10);
                     type.createDataset(timeVals, yVals);
                     plot.setDataset(datasetIndex, type.getDataset());
                     plot.mapDatasetToRangeAxis(datasetIndex, axisIndex);
@@ -374,6 +373,7 @@ public class STLPlot implements IConstants
                 case ELE_INDEX:
                     timeVals = model.getEleTimeVals();
                     yVals = model.getEleVals();
+                    // yVals = MathUtils.medianFilter(yVals, 10);
                     type.createDataset(timeVals, yVals);
                     plot.setDataset(datasetIndex, type.getDataset());
                     plot.mapDatasetToRangeAxis(datasetIndex, axisIndex);

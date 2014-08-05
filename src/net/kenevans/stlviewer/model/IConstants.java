@@ -107,7 +107,7 @@ public interface IConstants
     /*** The preference name for the Elevation color. */
     public static final String P_ELE_COLOR = "ElevationColor";
     /*** The default value for the Elevation color. */
-    public static final String D_ELE_COLOR = "0x301A00";
+    public static final String D_ELE_COLOR = "0xFF0099";
     /*** The preference name for the Elevation visibility. */
     public static final String P_ELE_D_ELE_VISIBILITY = "ElevationVisibility";
     /*** The default value for the Elevation visibility. */
