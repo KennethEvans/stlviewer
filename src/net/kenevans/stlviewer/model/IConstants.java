@@ -3,6 +3,8 @@ package net.kenevans.stlviewer.model;
 import java.awt.Color;
 import java.awt.Paint;
 
+import net.kenevans.stlviewer.utils.GpxUtils;
+
 /*
  * Created on Jul 9, 2012
  * By Kenneth Evans, Jr.
@@ -33,14 +35,14 @@ public interface IConstants
     public static final String VERSION = "1.0.0.0";
     /** The title for the plot. */
     public static final String PLOT_TITLE = "STL Data";
-    /** The frame width for viewer 2. */
-    public static final int CHART_WIDTH = 1200;
-    /** The frame height for viewer 2. */
-    public static final int CHART_HEIGHT = 600;
+    /** The frame width for the viewer. */
+    public static final int FRAME_WIDTH = 1200;
+    /** The frame height for the viewer. */
+    public static final int FRAME_HEIGHT = 750;
     /** The divider location for the main split pane. */
-    public static final int MAIN_PANE_DIVIDER_LOCATION = 5 * CHART_HEIGHT / 8;
+    public static final int MAIN_PANE_DIVIDER_LOCATION = 55 * FRAME_HEIGHT / 100;
     /** The divider location for the lower split pane. */
-    public static final int LOWER_PANE_DIVIDER_LOCATION = CHART_WIDTH / 2;
+    public static final int LOWER_PANE_DIVIDER_LOCATION = FRAME_WIDTH / 2;
 
     /***
      * The name of the preference node for accessing preferences for this
@@ -95,7 +97,12 @@ public interface IConstants
     /*** The preference name for the Speed range axis. */
     public static final String P_SPEED_RANGE_AXIS = "speedRangeAxis";
     /*** The default value for the Speed range axis. */
-    public static final String D_SPEED_RANGE_AXIS = Integer.toString(SPEED_INDEX);
+    public static final String D_SPEED_RANGE_AXIS = Integer
+        .toString(SPEED_INDEX);
+    /*** The preference name for the not moving speed. */
+    public static final String P_SPEED_NOT_MOVING = "speedNotMoving";
+    /*** The default value in m/sec for the the not moving speed. */
+    public static final double D_SPEED_NOT_MOVING = GpxUtils.NO_MOVE_SPEED;
 
     // Elevation
     /** Index for ELE */

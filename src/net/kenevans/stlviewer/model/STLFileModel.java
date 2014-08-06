@@ -377,27 +377,75 @@ public class STLFileModel implements IConstants
             info += "HR: " + startHrDate + " to " + endHrDate + LS;
             info += String.format("HR Duration: %d hr %d min %d sec",
                 hrDurationHours, hrDurationMin, hrDurationSec) + LS;
-            stats = getStats(hrVals, hrTimeVals);
+            stats = getTimeAverageStats(hrVals, hrTimeVals, -Double.MIN_VALUE);
             if(stats != null) {
                 info += String.format("HR Min=%.0f HR Max=%.0f HR Avg=%.1f",
                     stats[0], stats[1], stats[2]) + LS;
+            } else {
+                // Get simple average
+                stats = getSimpleStats(hrVals, hrTimeVals, -Double.MIN_VALUE);
+                if(stats != null) {
+                    info += String.format("HR Min=%.0f HR Max=%.0f HR Avg=%.1f"
+                        + " (Simple Average)", stats[0], stats[1], stats[2])
+                        + LS;
+                }
             }
         }
         if(speedVals.length != 0) {
-            stats = getStats(speedVals, speedTimeVals);
+            stats = getTimeAverageStats(speedVals, speedTimeVals,
+                -Double.MIN_VALUE);
             if(stats != null) {
                 info += String.format(
                     "Speed Min=%.1f Speed Max=%.1f Speed Avg=%.1f mi/hr",
                     stats[0], stats[1], stats[2])
                     + LS;
+            } else {
+                // Get simple average
+                stats = getSimpleStats(speedVals, speedTimeVals,
+                    -Double.MIN_VALUE);
+                if(stats != null) {
+                    info += String
+                        .format(
+                            "Speed Min=%.1f Speed Max=%.1f Speed Avg=%.1f mi/hr"
+                                + " (Simple Average)", stats[0], stats[1],
+                            stats[2])
+                        + LS;
+                }
             }
+            // Moving average
+            // Convert from m/sec to mi/hr
+            double noMoveSpeed = D_SPEED_NOT_MOVING * GpxUtils.M2MI
+                / GpxUtils.SEC2HR;
+            stats = getTimeAverageStats(speedVals, speedTimeVals, noMoveSpeed);
+            if(stats != null) {
+                info += String
+                    .format("  Moving Speed Avg=%.1f mi/hr", stats[2]) + LS;
+            } else {
+                // Get simple average
+                stats = getSimpleStats(speedVals, speedTimeVals, noMoveSpeed);
+                if(stats != null) {
+                    info += String.format("  Moving Speed Avg=%.1f mi/hr"
+                        + " (Simple Average)", stats[2])
+                        + LS;
+                }
+            }
+
         }
         if(eleVals.length != 0) {
-            stats = getStats(eleVals, timeVals);
+            stats = getTimeAverageStats(eleVals, timeVals, -Double.MIN_VALUE);
             if(stats != null) {
                 info += String.format(
                     "Ele Min=%.0f Ele Max=%.0f Ele Avg=%.1f ft", stats[0],
                     stats[1], stats[2])
+                    + LS;
+            }
+        } else {
+            // Get simple average
+            stats = getSimpleStats(eleVals, timeVals, -Double.MIN_VALUE);
+            if(stats != null) {
+                info += String.format(
+                    "Ele Min=%.0f Ele Max=%.0f Ele Avg=%.1f ft"
+                        + " (Simple Average)", stats[0], stats[1], stats[2])
                     + LS;
             }
         }
@@ -414,13 +462,15 @@ public class STLFileModel implements IConstants
      * 
      * @param vals
      * @param timeVals
+     * @param omitBelow Do not include values below this one.
      * @return {min, max, avg} or null on error.
      */
-    public static double[] getStats(double[] vals, long[] timeVals) {
+    public static double[] getSimpleStats(double[] vals, long[] timeVals,
+        double omitBelow) {
         // System.out.println("vals: " + vals.length + ", timeVals: "
         // + timeVals.length);
         if(vals.length != timeVals.length) {
-            Utils.errMsg("getStats: Array sizes (vals: " + vals.length
+            Utils.errMsg("getSimpleStats: Array sizes (vals: " + vals.length
                 + ", timeVals: " + timeVals.length + ") do not match");
             return null;
         }
@@ -432,9 +482,12 @@ public class STLFileModel implements IConstants
         double min = Double.MAX_VALUE;
         double sum = 0;
         double val;
+        int nVals = 0;
         for(int i = 0; i < len; i++) {
             val = vals[i];
             if(Double.isNaN(val)) continue;
+            if(val < omitBelow) continue;
+            nVals++;
             sum += val;
             if(val > max) {
                 max = val;
@@ -443,7 +496,79 @@ public class STLFileModel implements IConstants
                 min = val;
             }
         }
-        sum /= len;
+        if(nVals == 0) {
+            return null;
+        }
+        sum /= nVals;
+        return new double[] {min, max, sum};
+    }
+
+    /**
+     * Gets the statistics from the given values and time values by averaging
+     * over the values weighted by the time.
+     * 
+     * @param vals
+     * @param timeVals
+     * @param omitBelow Do not include values below this one.
+     * @return {min, max, avg} or null on error.
+     */
+    public static double[] getTimeAverageStats(double[] vals, long[] timeVals,
+        double omitBelow) {
+        // System.out.println("vals: " + vals.length + ", timeVals: "
+        // + timeVals.length);
+        if(vals.length != timeVals.length) {
+            Utils.errMsg("getTimeAverageStats: Array sizes (vals: "
+                + vals.length + ", timeVals: " + timeVals.length
+                + ") do not match");
+            return null;
+        }
+        int len = vals.length;
+        if(len == 0) {
+            return new double[] {0, 0, 0};
+        }
+        if(len < 2) {
+            return new double[] {vals[0], vals[0], vals[0]};
+        }
+        double max = -Double.MAX_VALUE;
+        double min = Double.MAX_VALUE;
+        double sum = 0;
+        double val;
+        // Check for NaN
+        for(int i = 0; i < len; i++) {
+            val = vals[i];
+            if(Double.isNaN(val)) {
+                return null;
+            }
+        }
+
+        // Loop over values.
+        double totalWeight = 0;
+        double weight;
+        for(int i = 0; i < len; i++) {
+            val = vals[i];
+            if(Double.isNaN(val)) continue;
+            if(val < omitBelow) continue;
+            if(i == 0) {
+                weight = .5 * (timeVals[i + 1] - timeVals[i]);
+            } else if(i == len - 1) {
+                weight = .5 * (timeVals[i] - timeVals[i - 1]);
+            } else {
+                weight = .5 * (timeVals[i] - timeVals[i - 1]);
+            }
+            totalWeight += weight;
+            // Shoudn't happen
+            sum += val * weight;
+            if(val > max) {
+                max = val;
+            }
+            if(val < min) {
+                min = val;
+            }
+        }
+        if(totalWeight == 0) {
+            return null;
+        }
+        sum /= (totalWeight);
         return new double[] {min, max, sum};
     }
 

@@ -5,12 +5,15 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dialog;
-import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileFilter;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.prefs.Preferences;
 
 import javax.swing.BorderFactory;
@@ -130,6 +133,20 @@ public class STLViewer extends JFrame implements IConstants
             }
         });
 
+        // Sort in reverse order
+        List<File> sortedList = Arrays.asList(files);
+        Collections.sort(sortedList, new Comparator<File>() {
+            public int compare(File fa, File fb) {
+                if(fa.isDirectory() && !fb.isDirectory()) return -1;
+                if(fb.isDirectory() && !fa.isDirectory()) return 1;
+                // Name in reverse order
+                return (fb.getName().compareTo(fa.getName()));
+            }
+        });
+        // Re-populate the array
+        files = sortedList.toArray(files);
+
+        // Make the list of file names
         int nFiles = files.length;
         fileNames = new String[nFiles];
         if(nFiles <= 0) {
@@ -140,6 +157,8 @@ public class STLViewer extends JFrame implements IConstants
             }
             curFileName = fileNames[0];
         }
+
+        // Fill in the ListModel
         populateList();
     }
 
@@ -151,10 +170,11 @@ public class STLViewer extends JFrame implements IConstants
 
         // Chart panel
         displayPanel.setLayout(new BorderLayout());
-        displayPanel.setPreferredSize(new Dimension(CHART_WIDTH,
-            CHART_HEIGHT / 2));
         plot.createChart();
-        plot.getChartPanel().setPreferredSize(new Dimension(600, 270));
+        // Not necessary to set this, it will adjust per the divider location
+        // and frame size
+        // plot.getChartPanel().setPreferredSize(
+        // new Dimension(CHART_WIDTH, CHART_HEIGHT));
         plot.getChartPanel().setDomainZoomable(true);
         plot.getChartPanel().setRangeZoomable(true);
         javax.swing.border.CompoundBorder compoundborder = BorderFactory
@@ -188,20 +208,20 @@ public class STLViewer extends JFrame implements IConstants
             }
         });
 
-        // BeatPanel
-        JPanel beatPanel = new JPanel();
-        beatPanel.setLayout(new BorderLayout());
+        // Info Panel
+        JPanel infoPanel = new JPanel();
+        infoPanel.setLayout(new BorderLayout());
 
-        // Beat test area
+        // Info text area
         infoTextArea = new JTextArea();
         infoTextArea.setEditable(false);
         infoTextArea.setColumns(40);
         JScrollPane beatScrollPane = new JScrollPane(infoTextArea);
-        beatPanel.add(beatScrollPane, BorderLayout.CENTER);
+        infoPanel.add(beatScrollPane, BorderLayout.CENTER);
 
         // Lower split pane
         JSplitPane lowerPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-            listPanel, beatPanel);
+            listPanel, infoPanel);
         lowerPane.setContinuousLayout(true);
         lowerPane.setDividerLocation(LOWER_PANE_DIVIDER_LOCATION);
 
@@ -332,7 +352,7 @@ public class STLViewer extends JFrame implements IConstants
             this.setJMenuBar(menuBar);
 
             // Display the window
-            this.setBounds(20, 20, CHART_WIDTH, CHART_HEIGHT);
+            this.setBounds(20, 20, FRAME_WIDTH, FRAME_HEIGHT);
             RefineryUtilities.centerFrameOnScreen(this);
             this.setVisible(true);
             if(USE_START_FILE_NAME) {
