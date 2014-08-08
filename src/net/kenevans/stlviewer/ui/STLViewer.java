@@ -45,6 +45,7 @@ import net.kenevans.core.utils.Utils;
 import net.kenevans.stlviewer.model.IConstants;
 import net.kenevans.stlviewer.model.STLFileModel;
 import net.kenevans.stlviewer.preferences.PreferencesDialog;
+import net.kenevans.stlviewer.preferences.Settings;
 
 import org.jfree.ui.RefineryUtilities;
 
@@ -63,12 +64,12 @@ public class STLViewer extends JFrame implements IConstants
     private static final long serialVersionUID = 1L;
     public static final String LS = System.getProperty("line.separator");
 
+    private Settings settings;
+
     /** Keeps the last-used path for the file open dialog. */
     public String defaultOpenPath;
     /** Keeps the last-used path for the file save dialog. */
     public String defaultSavePath;
-    // ** The current default directory */
-    public String defaultDirectory;
 
     /** The model for this user interface. */
     private STLFileModel model;
@@ -102,7 +103,7 @@ public class STLViewer extends JFrame implements IConstants
         loadUserPreferences();
         plot = new STLPlot(this);
         uiInit();
-        findFileNames(defaultDirectory);
+        findFileNames(settings.getDefaultDirectory());
     }
 
     /**
@@ -392,7 +393,7 @@ public class STLViewer extends JFrame implements IConstants
         JFileChooser chooser = new JFileChooser();
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         if(defaultOpenPath != null) {
-            File dir = new File(defaultDirectory);
+            File dir = new File(settings.getDefaultDirectory());
             chooser.setCurrentDirectory(dir);
             chooser.setSelectedFile(dir);
         }
@@ -409,8 +410,8 @@ public class STLViewer extends JFrame implements IConstants
                 Utils.errMsg("Not a diretory: " + dirName);
                 return;
             }
-            defaultDirectory = dirName;
-            findFileNames(defaultDirectory);
+            settings.setDefaultDirectory(dirName);
+            findFileNames(settings.getDefaultDirectory());
         }
     }
 
@@ -503,9 +504,8 @@ public class STLViewer extends JFrame implements IConstants
      * Set viewer fields from the user preferences.
      */
     public void loadUserPreferences() {
-        Preferences prefs = STLViewer.getUserPreferences();
-        defaultDirectory = defaultOpenPath = defaultSavePath = prefs.get(
-            P_DEFAULT_DIR, D_DEFAULT_DIR);
+        settings = new Settings();
+        settings.loadFromPreferences();
     }
 
     /**
@@ -513,7 +513,7 @@ public class STLViewer extends JFrame implements IConstants
      */
     private void setPreferences() {
         // Save old values
-        String defaultDirectoryOld = getDefaultDirectory();
+        String defaultDirectoryOld = settings.getDefaultDirectory();
 
         PreferencesDialog dialog = new PreferencesDialog(this, this);
         dialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
@@ -526,8 +526,10 @@ public class STLViewer extends JFrame implements IConstants
         boolean ok = dialog.showDialog();
         if(ok) {
             loadUserPreferences();
-            if(!defaultDirectory.equals(defaultDirectoryOld)) {
-                findFileNames(defaultDirectory);
+            // TODO
+            plot.reset();
+            if(!settings.getDefaultDirectory().equals(defaultDirectoryOld)) {
+                findFileNames(settings.getDefaultDirectory());
             }
         }
     }
@@ -610,26 +612,27 @@ public class STLViewer extends JFrame implements IConstants
     }
 
     /**
-     * @return The value of defaultDirectory.
-     */
-    public String getDefaultDirectory() {
-        return defaultDirectory;
-    }
-
-    /**
-     * @param defaultDirectory The new value for defaultDirectory.
-     */
-    public void setDefaultDirectory(String defaultDirectory) {
-        this.defaultDirectory = defaultDirectory;
-    }
-
-    /**
      * Returns the user preference store for the viewer.
      * 
      * @return
      */
     public static Preferences getUserPreferences() {
         return Preferences.userRoot().node(P_PREFERENCE_NODE);
+    }
+    
+
+    /**
+     * @return The value of settings.
+     */
+    public Settings getSettings() {
+        return settings;
+    }
+
+    /**
+     * @param settings The new value for settings.
+     */
+    public void setSettings(Settings settings) {
+        this.settings = settings;
     }
 
     /**

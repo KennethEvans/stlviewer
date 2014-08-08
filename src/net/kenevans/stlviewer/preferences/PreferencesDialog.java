@@ -6,9 +6,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.io.File;
-import java.util.prefs.Preferences;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -31,6 +32,12 @@ public class PreferencesDialog extends JDialog implements IConstants
     private boolean ok = false;
 
     JTextField defaultDirText;
+    JCheckBox hrVisibileCheck;
+    JCheckBox speedVisibileCheck;
+    JCheckBox eleVisibileCheck;
+    JTextField hrRavCountText;
+    JTextField speedRavCountText;
+    JTextField eleRavCountText;
 
     /**
      * Constructor
@@ -43,7 +50,9 @@ public class PreferencesDialog extends JDialog implements IConstants
             return;
         }
         init();
-        setValuesFromPreferences();
+        Settings settings = new Settings();
+        settings.loadFromPreferences();
+        setValues(settings);
         // Locate it on the screen
         this.setLocationRelativeTo(parent);
     }
@@ -65,15 +74,29 @@ public class PreferencesDialog extends JDialog implements IConstants
         GridBagConstraints gbc = null;
         int gridy = -1;
 
-        // Default directory
+        // File Group //////////////////////////////////////////////////////
+        JPanel fileGroup = new JPanel();
+        fileGroup.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createTitledBorder("File"),
+            BorderFactory.createEmptyBorder(2, 2, 2, 2)));
         gridy++;
+        fileGroup.setLayout(new GridBagLayout());
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 0;
+        gbc.gridy = gridy;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 100;
+        contentPane.add(fileGroup, gbc);
+
+        // Default directory
         JLabel label = new JLabel("Default Directory:");
         label.setToolTipText("The default directory.");
         gbc = (GridBagConstraints)gbcDefault.clone();
         gbc.gridx = 0;
         gbc.gridy = gridy;
-        contentPane.add(label, gbc);
+        fileGroup.add(label, gbc);
 
+        // File JPanel holds the filename and browse button
         JPanel filePanel = new JPanel();
         filePanel.setLayout(new GridBagLayout());
         gbc = (GridBagConstraints)gbcDefault.clone();
@@ -81,7 +104,7 @@ public class PreferencesDialog extends JDialog implements IConstants
         gbc.gridy = gridy;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 100;
-        contentPane.add(filePanel, gbc);
+        fileGroup.add(filePanel, gbc);
 
         defaultDirText = new JTextField(30);
         defaultDirText.setToolTipText(label.getText());
@@ -108,34 +131,207 @@ public class PreferencesDialog extends JDialog implements IConstants
         gbc.gridx = 1;
         filePanel.add(button);
 
-        // Dummy
+        // HR Group /////////////////////////////////////////////////////////
+        JPanel hrGroup = new JPanel();
+        hrGroup.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createTitledBorder("Heart Rate"),
+            BorderFactory.createEmptyBorder(2, 2, 2, 2)));
         gridy++;
+        hrGroup.setLayout(new GridBagLayout());
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 0;
+        gbc.gridy = gridy;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 100;
+        contentPane.add(hrGroup, gbc);
+
+        // Visible
+        hrVisibileCheck = new JCheckBox("Visible");
+        hrVisibileCheck.setToolTipText("Whether HR data is visible.");
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 0;
+        hrGroup.add(hrVisibileCheck, gbc);
+
+        // Running average
+        String toolTip = "Number of data points to average over.  "
+            + "0->Don't average.  " + "Negative->Omit raw values.";
+        label = new JLabel("Running Average Count:");
+        label.setToolTipText(toolTip);
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 1;
+        hrGroup.add(label, gbc);
+
+        hrRavCountText = new JTextField(5);
+        hrRavCountText.setToolTipText(label.getText());
+        hrRavCountText.setToolTipText(toolTip);
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 2;
+        // gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 100;
+        hrGroup.add(hrRavCountText, gbc);
+
+        // Speed Group //////////////////////////////////////////////////////
+        JPanel speedGroup = new JPanel();
+        speedGroup.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createTitledBorder("Speed"),
+            BorderFactory.createEmptyBorder(2, 2, 2, 2)));
+        gridy++;
+        speedGroup.setLayout(new GridBagLayout());
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 0;
+        gbc.gridy = gridy;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 100;
+        contentPane.add(speedGroup, gbc);
+
+        // Visible
+        speedVisibileCheck = new JCheckBox("Visible");
+        speedVisibileCheck.setToolTipText("Whether HR data is visible.");
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 0;
+        speedGroup.add(speedVisibileCheck, gbc);
+
+        // Running average
+        toolTip = "Number of data points to average over.  "
+            + "0->Don't average.  " + "Negative->Omit raw values.";
+        label = new JLabel("Running Average Count:");
+        label.setToolTipText(toolTip);
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 1;
+        speedGroup.add(label, gbc);
+
+        speedRavCountText = new JTextField(5);
+        speedRavCountText.setToolTipText(label.getText());
+        speedRavCountText.setToolTipText(toolTip);
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 2;
+        // gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 100;
+        speedGroup.add(speedRavCountText, gbc);
+
+        // Elevation Group //////////////////////////////////////////////////
+        JPanel eleGroup = new JPanel();
+        eleGroup.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createTitledBorder("Elevation"),
+            BorderFactory.createEmptyBorder(2, 2, 2, 2)));
+        gridy++;
+        eleGroup.setLayout(new GridBagLayout());
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 0;
+        gbc.gridy = gridy;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 100;
+        contentPane.add(eleGroup, gbc);
+
+        // Visible
+        eleVisibileCheck = new JCheckBox("Visible");
+        eleVisibileCheck.setToolTipText("Whether HR data is visible.");
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 0;
+        eleGroup.add(eleVisibileCheck, gbc);
+
+        // Running average
+        toolTip = "Number of data points to average over.  "
+            + "0->Don't average.  " + "Negative->Omit raw values.";
+        label = new JLabel("Running Average Count:");
+        label.setToolTipText(toolTip);
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 1;
+        eleGroup.add(label, gbc);
+
+        eleRavCountText = new JTextField(5);
+        eleRavCountText.setToolTipText(label.getText());
+        eleRavCountText.setToolTipText(toolTip);
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 2;
+        // gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 100;
+        eleGroup.add(eleRavCountText, gbc);
+
+        // Dummy Group
+        JPanel dummyGroup = new JPanel();
+        dummyGroup.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createTitledBorder("Dummy"),
+            BorderFactory.createEmptyBorder(2, 2, 2, 2)));
+        gridy++;
+        dummyGroup.setLayout(new GridBagLayout());
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 0;
+        gbc.gridy = gridy;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 100;
+        contentPane.add(dummyGroup, gbc);
+
+        // Dummy
         label = new JLabel("Dummy:");
         label.setToolTipText("Dummy.");
         gbc = (GridBagConstraints)gbcDefault.clone();
         gbc.gridx = 0;
-        gbc.gridy = gridy;
-        contentPane.add(label, gbc);
+        dummyGroup.add(label, gbc);
 
         JTextField dummyText = new JTextField(30);
         dummyText.setToolTipText(label.getText());
         gbc = (GridBagConstraints)gbcDefault.clone();
         gbc.gridx = 1;
-        gbc.gridy = gridy;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 100;
-        contentPane.add(dummyText, gbc);
+        dummyGroup.add(dummyText, gbc);
 
-        // Button panel
+        // Button panel /////////////////////////////////////////////////////
         gridy++;
         JPanel buttonPanel = new JPanel();
         gbc = (GridBagConstraints)gbcDefault.clone();
-        gbc.gridy = 0;
         gbc.gridy = gridy;
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.CENTER;
         contentPane.add(buttonPanel, gbc);
+
+        button = new JButton();
+        button.setText("Use Current");
+        button.setToolTipText("Set to the current viewer values.");
+        button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                Settings settings = viewer.getSettings();
+                if(settings == null) {
+                    Utils.errMsg("Settings in the viewer do not exist");
+                    return;
+                }
+                setValues(settings);
+            }
+        });
+        buttonPanel.add(button);
+
+        button = new JButton();
+        button.setText("Use Defaults");
+        button.setToolTipText("Set to the STLViewer default values.");
+        button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                Settings settings = new Settings();
+                if(settings == null) {
+                    Utils.errMsg("Default settings do not exist");
+                    return;
+                }
+                setValues(settings);
+            }
+        });
+        buttonPanel.add(button);
+
+        button = new JButton();
+        button.setText("Use Stored");
+        button.setToolTipText("Reset to the current stored preferences.");
+        button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                Settings settings = new Settings();
+                settings.loadFromPreferences();
+                if(settings == null) {
+                    Utils.errMsg("Cannot load preferences");
+                    return;
+                }
+                setValues(settings);
+            }
+        });
+        buttonPanel.add(button);
 
         button = new JButton();
         button.setText("Save");
@@ -144,29 +340,22 @@ public class PreferencesDialog extends JDialog implements IConstants
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 boolean result = setPreferencesFromValues();
                 if(result) {
-                    ok = result;
-                    PreferencesDialog.this.setVisible(false);
+                    Utils.infoMsg("Preferences set successfully");
                 }
             }
         });
         buttonPanel.add(button);
 
         button = new JButton();
-        button.setText("Use Current");
-        button.setToolTipText("Set to the current viewer values.");
+        button.setText("Set Current");
+        button.setToolTipText("Quit and set the current values in the viewer.");
         button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent e) {
-                setValuesFromViewer();
-            }
-        });
-        buttonPanel.add(button);
-
-        button = new JButton();
-        button.setText("Reset");
-        button.setToolTipText("Reset to the current preferences.");
-        button.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                setValuesFromPreferences();
+                boolean result = setPreferencesFromValues();
+                if(result) {
+                    ok = result;
+                    PreferencesDialog.this.setVisible(false);
+                }
             }
         });
         buttonPanel.add(button);
@@ -215,28 +404,40 @@ public class PreferencesDialog extends JDialog implements IConstants
     }
 
     /**
-     * Resets the internal state from the input viewer.
+     * Set the Controls from the given Settings. Can also be used to initialize
+     * the dialog.
+     * 
+     * @param settings
      */
-    public void setValuesFromViewer() {
+    public void setValues(Settings settings) {
         if(viewer == null) {
             return;
         }
         if(defaultDirText != null) {
-            defaultDirText.setText(viewer.getDefaultDirectory());
+            defaultDirText.setText(settings.getDefaultDirectory());
         }
-    }
 
-    /**
-     * Set the Controls from the preference store. Can also be used to
-     * initialize the dialog.
-     */
-    public void setValuesFromPreferences() {
-        if(viewer == null) {
-            return;
+        if(hrVisibileCheck != null) {
+            hrVisibileCheck.setSelected(settings.getHrVisible());
         }
-        Preferences prefs = STLViewer.getUserPreferences();
-        if(defaultDirText != null) {
-            defaultDirText.setText(prefs.get(P_DEFAULT_DIR, D_DEFAULT_DIR));
+        if(speedVisibileCheck != null) {
+            speedVisibileCheck.setSelected(settings.getSpeedVisible());
+        }
+        if(eleVisibileCheck != null) {
+            eleVisibileCheck.setSelected(settings.getEleVisible());
+        }
+
+        if(hrRavCountText != null) {
+            hrRavCountText.setText(Integer.toString(settings
+                .getHrRollingAvgCount()));
+        }
+        if(speedRavCountText != null) {
+            speedRavCountText.setText(Integer.toString(settings
+                .getSpeedRollingAvgCount()));
+        }
+        if(eleRavCountText != null) {
+            eleRavCountText.setText(Integer.toString(settings
+                .getEleRollingAvgCount()));
         }
     }
 
@@ -248,36 +449,43 @@ public class PreferencesDialog extends JDialog implements IConstants
      *         the dialog up.
      */
     public boolean setPreferencesFromValues() {
-        Preferences prefs = STLViewer.getUserPreferences();
+        Settings settings = new Settings();
+        try {
+            settings.setDefaultDirectory(defaultDirText.getText());
 
-        // Default directory
-        String defaultDir = defaultDirText.getText();
-        if(defaultDir == null) {
-            Utils.errMsg("Value for the default directory is null");
-            return false;
-        }
-        File file = new File(defaultDir);
-        if(file == null) {
-            Utils.errMsg("The default directory is invalid");
-            return false;
-        }
-        if(!file.exists()) {
-            Utils.errMsg("The default directory does not exist");
-            return false;
-        }
-        if(!file.isDirectory()) {
-            Utils.errMsg("The default directory is not a directory");
+            settings.setHrVisible(hrVisibileCheck.isSelected());
+            settings.setSpeedVisible(speedVisibileCheck.isSelected());
+            settings.setEleVisible(eleVisibileCheck.isSelected());
+
+            settings.setHrRollingAvgCount(Integer.parseInt((hrRavCountText
+                .getText())));
+            settings.setSpeedRollingAvgCount(Integer
+                .parseInt((speedRavCountText.getText())));
+            settings.setEleRollingAvgCount(Integer.parseInt((eleRavCountText
+                .getText())));
+        } catch(Exception ex) {
+            Utils.excMsg("Error reading values", ex);
             return false;
         }
 
-        // Set the values
-        prefs.put(P_DEFAULT_DIR, defaultDir);
+        // Check if the values are valid
+        boolean res = settings.checkValues(true);
+        if(!res) {
+            Utils.errMsg("Aborting: Invalid values");
+            return false;
+        }
 
+        // Save them
+        res = settings.saveToPreferences(true);
+        if(!res) {
+            Utils.errMsg("Error setting preferences");
+            return false;
+        }
         return true;
     }
 
     /**
-     * Shows the dialog an returns whether it was successful or not.
+     * Shows the dialog and returns whether it was successful or not.
      * 
      * @return
      */

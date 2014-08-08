@@ -71,13 +71,17 @@ public interface IConstants
     /*** The default value for the HR color. */
     public static final String D_HR_COLOR = "0x000000";
     /*** The preference name for the HR visibility. */
-    public static final String P_HR_D_HR_WISIBILITY = "hrVisibility";
+    public static final String P_HR_VISIBILITY = "hrVisibility";
     /*** The default value for the HR visibility. */
-    public static final String D_HR_VISIBILITY = "true";
+    public static final boolean D_HR_VISIBILITY = true;
     /*** The preference name for the HR range axis. */
     public static final String P_HR_RANGE_AXIS = "hrRangeAxis";
     /*** The default value for the HR range axis. */
     public static final String D_HR_RANGE_AXIS = Integer.toString(HR_INDEX);
+    /*** The preference name for the HR rolling average count. */
+    public static final String P_HR_ROLLING_AVG_COUNT = "hrRollingAvgCount";
+    /*** The default value for the HR rolling average count. */
+    public static final int D_HR_ROLLING_AVG_COUNT = 0;
 
     // Speed
     /** Index for SPEED */
@@ -91,9 +95,9 @@ public interface IConstants
     /*** The default value for the Speed color. */
     public static final String D_SPEED_COLOR = "0x0099FF";
     /*** The preference name for the Speed visibility. */
-    public static final String P_SPEED_D_SPEED_VISIBILITY = "speedVisibility";
+    public static final String P_SPEED_VISIBILITY = "speedVisibility";
     /*** The default value for the Speed visibility. */
-    public static final String D_SPEED_VISIBILITY = "true";
+    public static final boolean D_SPEED_VISIBILITY = true;
     /*** The preference name for the Speed range axis. */
     public static final String P_SPEED_RANGE_AXIS = "speedRangeAxis";
     /*** The default value for the Speed range axis. */
@@ -103,6 +107,10 @@ public interface IConstants
     public static final String P_SPEED_NOT_MOVING = "speedNotMoving";
     /*** The default value in m/sec for the the not moving speed. */
     public static final double D_SPEED_NOT_MOVING = GpxUtils.NO_MOVE_SPEED;
+    /*** The preference name for the speed rolling average count. */
+    public static final String P_SPEED_ROLLING_AVG_COUNT = "speedRollingAvgCount";
+    /*** The default value for the speed rolling average count. */
+    public static final int D_SPEED_ROLLING_AVG_COUNT = 5;
 
     // Elevation
     /** Index for ELE */
@@ -116,13 +124,17 @@ public interface IConstants
     /*** The default value for the Elevation color. */
     public static final String D_ELE_COLOR = "0xFF0099";
     /*** The preference name for the Elevation visibility. */
-    public static final String P_ELE_D_ELE_VISIBILITY = "ElevationVisibility";
+    public static final String P_ELE_VISIBILITY = "ElevationVisibility";
     /*** The default value for the Elevation visibility. */
-    public static final String D_ELE_VISIBILITY = "true";
+    public static final boolean D_ELE_VISIBILITY = false;
     /*** The preference name for the Elevation range axis. */
     public static final String P_ELE_RANGE_AXIS = "ElevationRangeAxis";
     /*** The default value for the Elevation range axis. */
     public static final String D_ELE_RANGE_AXIS = Integer.toString(ELE_INDEX);
+    /*** The preference name for the elevation rolling average count. */
+    public static final String P_ELE_ROLLING_AVG_COUNT = "elevationRollingAvgCount";
+    /*** The default value for the elevation rolling average count. */
+    public static final int D_ELE_ROLLING_AVG_COUNT = 5;
 
     /** Zone boundaries */
     public static final double[] hrZones = {157, 141, 125, 109, 94, 78};

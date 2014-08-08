@@ -8,6 +8,7 @@ import net.kenevans.stlviewer.model.IConstants;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.time.Minute;
+import org.jfree.data.time.MovingAverage;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 
@@ -95,9 +96,20 @@ public class DataType implements IConstants
                 series.addOrUpdate(new Minute(new Date(timeVals[n])), yVals[n]);
             }
         }
+        
         dataset.addSeries(series);
         int seriesIndex = dataset.indexOf(series);
         renderer.setSeriesPaint(seriesIndex, paint);
+//        renderer.setSeriesVisible(seriesIndex, false);
+
+        // Moving Average
+        // nMaV must be 1 or greater, 1 is the same as no average
+        int nMav = 1;
+        TimeSeries mavSeries = MovingAverage.createMovingAverage(series,
+            seriesName + " (" + nMav + " pt MA)", nMav, 0);
+        dataset.addSeries(mavSeries);
+        int mavSeriesIndex = dataset.indexOf(mavSeries);
+        renderer.setSeriesPaint(mavSeriesIndex, paint);
     }
 
     /**

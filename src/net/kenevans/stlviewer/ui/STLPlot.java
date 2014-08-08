@@ -13,6 +13,7 @@ import javax.swing.JSeparator;
 import net.kenevans.core.utils.Utils;
 import net.kenevans.stlviewer.model.IConstants;
 import net.kenevans.stlviewer.model.STLFileModel;
+import net.kenevans.stlviewer.preferences.Settings;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -52,7 +53,7 @@ public class STLPlot implements IConstants
     private ChartPanel chartPanel;
 
     /** The STLViewer that contains this plot. */
-    // private STLViewer viewer;
+    private STLViewer viewer;
 
     /** The subtitle */
     private TextTitle subTitle;
@@ -60,8 +61,12 @@ public class STLPlot implements IConstants
     /** The array of types */
     private DataType[] dataTypes;
 
+    private JCheckBoxMenuItem hrVisibleItem;
+    private JCheckBoxMenuItem speedVisibleItem;
+    private JCheckBoxMenuItem eleVisibleItem;
+
     public STLPlot(STLViewer viewer) {
-        // this.viewer = viewer;
+        this.viewer = viewer;
     }
 
     /**
@@ -92,17 +97,16 @@ public class STLPlot implements IConstants
         extendPopupMenu();
 
         XYPlot plot = chart.getXYPlot();
+        Settings settings = getSettings();
         dataTypes = new DataType[] {
             // Don't use Boolean.getBoolean. It gets a system value with that
             // name
             new HrDataType(plot, D_HR_NAME, HR_INDEX, Color.decode(D_HR_COLOR),
-                Boolean.parseBoolean(D_HR_VISIBILITY)),
+                settings.getHrVisible()),
             new DataType(plot, D_SPEED_NAME, SPEED_INDEX,
-                Color.decode(D_SPEED_COLOR),
-                Boolean.parseBoolean(D_SPEED_VISIBILITY)),
+                Color.decode(D_SPEED_COLOR), settings.getSpeedVisible()),
             new DataType(plot, D_ELE_NAME, ELE_INDEX,
-                Color.decode(D_ELE_COLOR),
-                Boolean.parseBoolean(D_ELE_VISIBILITY)),
+                Color.decode(D_ELE_COLOR), settings.getEleVisible()),
         // Comment to keep brace on a separate line
         };
 
@@ -115,6 +119,8 @@ public class STLPlot implements IConstants
     private void extendPopupMenu() {
         JPopupMenu menu = chartPanel.getPopupMenu();
         if(menu == null) return;
+
+        Settings settings = getSettings();
 
         JSeparator separator = new JSeparator();
         menu.add(separator);
@@ -167,8 +173,7 @@ public class STLPlot implements IConstants
         separator = new JSeparator();
         menu.add(separator);
 
-        final JCheckBoxMenuItem hrVisibleItem = new JCheckBoxMenuItem("HR",
-            Boolean.parseBoolean(D_HR_VISIBILITY));
+        hrVisibleItem = new JCheckBoxMenuItem("HR", settings.getHrVisible());
         hrVisibleItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 boolean selected = ((JCheckBoxMenuItem)ae.getSource())
@@ -185,8 +190,8 @@ public class STLPlot implements IConstants
         });
         menu.add(hrVisibleItem);
 
-        final JCheckBoxMenuItem speedVisibleItem = new JCheckBoxMenuItem(
-            "Speed", Boolean.parseBoolean(D_SPEED_VISIBILITY));
+        speedVisibleItem = new JCheckBoxMenuItem("Speed",
+            settings.getSpeedVisible());
         speedVisibleItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 boolean selected = ((JCheckBoxMenuItem)ae.getSource())
@@ -203,8 +208,8 @@ public class STLPlot implements IConstants
         });
         menu.add(speedVisibleItem);
 
-        final JCheckBoxMenuItem eleVisibleItem = new JCheckBoxMenuItem(
-            "Elevation", Boolean.parseBoolean(D_ELE_VISIBILITY));
+        eleVisibleItem = new JCheckBoxMenuItem("Elevation",
+            settings.getEleVisible());
         eleVisibleItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 boolean selected = ((JCheckBoxMenuItem)ae.getSource())
@@ -220,6 +225,18 @@ public class STLPlot implements IConstants
             }
         });
         menu.add(eleVisibleItem);
+
+        separator = new JSeparator();
+        menu.add(separator);
+
+        item = new JMenuItem();
+        item.setText("Reset");
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                reset();
+            }
+        });
+        menu.add(item);
     }
 
     // public String info() {
@@ -267,6 +284,47 @@ public class STLPlot implements IConstants
     public void toggleMarkers() {
         showMarkers = !showMarkers;
         setAllMarkers();
+    }
+
+    /**
+     * Resets the plot.
+     */
+    public void reset() {
+        // Clear the plot
+        clearPlot();
+        STLFileModel model = null;
+        if(viewer != null) {
+            model = viewer.getModel();
+        }
+
+        // Reset the context menu
+        Settings settings = getSettings();
+        hrVisibleItem.setSelected(settings.getHrVisible());
+        speedVisibleItem.setSelected(settings.getSpeedVisible());
+        eleVisibleItem.setSelected(settings.getEleVisible());
+
+        // Markers
+        showMarkers = false;
+        setAllMarkers();
+
+        // Recreate the data types
+        XYPlot plot = chartPanel.getChart().getXYPlot();
+        dataTypes = new DataType[] {
+            // Don't use Boolean.getBoolean. It gets a system value with that
+            // name
+            new HrDataType(plot, D_HR_NAME, HR_INDEX, Color.decode(D_HR_COLOR),
+                settings.getHrVisible()),
+            new DataType(plot, D_SPEED_NAME, SPEED_INDEX,
+                Color.decode(D_SPEED_COLOR), settings.getSpeedVisible()),
+            new DataType(plot, D_ELE_NAME, ELE_INDEX,
+                Color.decode(D_ELE_COLOR), settings.getEleVisible()),
+        // Comment to keep brace on a separate line
+        };
+
+        // Add the model to the chart which causes it to recalculate
+        if(model != null) {
+            addModelToChart(model);
+        }
     }
 
     /**
@@ -335,9 +393,6 @@ public class STLPlot implements IConstants
             double[] yVals;
             XYPlot plot;
             for(DataType type : dataTypes) {
-                if(!type.getVisible()) {
-                    continue;
-                }
                 datasetIndex = type.getDatasetIndex();
                 axisIndex = type.getAxisIndex();
                 // Axis
@@ -384,12 +439,37 @@ public class STLPlot implements IConstants
                         + datasetIndex);
                     break;
                 }
+                // Set the visibility
+                if(!type.getVisible()) {
+                    plot.getRangeAxis(axisIndex).setVisible(false);
+                    plot.setDataset(datasetIndex, null);
+                    continue;
+                }
             }
             setAllMarkers();
         } catch(Exception ex) {
             Utils.excMsg("Error adding data to plot", ex);
             ex.printStackTrace();
         }
+    }
+
+    /**
+     * Get the Settings from the viewer. Use one based on preferences if there
+     * is an error.
+     * 
+     * @return
+     */
+    Settings getSettings() {
+        Settings settings = null;
+
+        if(viewer != null) {
+            settings = viewer.getSettings();
+        }
+        if(settings == null) {
+            settings = new Settings();
+            settings.loadFromPreferences();
+        }
+        return settings;
     }
 
     /**
