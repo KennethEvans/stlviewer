@@ -30,6 +30,7 @@ public class DataType implements IConstants
     protected int axisIndex;
     protected Paint paint;
     protected boolean visible;
+    protected int movingAvgCount;
 
     protected XYPlot plot;
     protected TimeSeriesCollection dataset;
@@ -43,10 +44,12 @@ public class DataType implements IConstants
      * @param datasetIndex
      * @param paint
      * @param visible
+     * @param movingAvgCount
      */
     public DataType(XYPlot plot, String name, int datasetIndex, Paint paint,
-        boolean visible) {
-        this(plot, name, datasetIndex, datasetIndex, paint, visible);
+        boolean visible, int movingAvgCount) {
+        this(plot, name, datasetIndex, datasetIndex, paint, visible,
+            movingAvgCount);
     }
 
     /**
@@ -58,15 +61,17 @@ public class DataType implements IConstants
      * @param axisIndex
      * @param paint
      * @param visible
+     * @param movingAvgCount
      */
     public DataType(XYPlot plot, String name, int datasetIndex, int axisIndex,
-        Paint paint, boolean visible) {
+        Paint paint, boolean visible, int movingAvgCount) {
         this.plot = plot;
         this.name = name;
         this.datasetIndex = datasetIndex;
         this.axisIndex = axisIndex;
         this.paint = paint;
         this.visible = visible;
+        this.movingAvgCount = movingAvgCount;
     }
 
     /**
@@ -96,20 +101,27 @@ public class DataType implements IConstants
                 series.addOrUpdate(new Minute(new Date(timeVals[n])), yVals[n]);
             }
         }
-        
-        dataset.addSeries(series);
-        int seriesIndex = dataset.indexOf(series);
-        renderer.setSeriesPaint(seriesIndex, paint);
-//        renderer.setSeriesVisible(seriesIndex, false);
+
+        // Plot the unaveraged data if the movingAvgCount in negative or 0 or 1
+        // (in which case the moving average is the same as the unaveraged data)
+        if(movingAvgCount < 2) {
+            dataset.addSeries(series);
+            int seriesIndex = dataset.indexOf(series);
+            renderer.setSeriesPaint(seriesIndex, paint);
+            renderer.setSeriesVisible(seriesIndex, visible);
+        }
 
         // Moving Average
         // nMaV must be 1 or greater, 1 is the same as no average
-        int nMav = 1;
-        TimeSeries mavSeries = MovingAverage.createMovingAverage(series,
-            seriesName + " (" + nMav + " pt MA)", nMav, 0);
-        dataset.addSeries(mavSeries);
-        int mavSeriesIndex = dataset.indexOf(mavSeries);
-        renderer.setSeriesPaint(mavSeriesIndex, paint);
+        int absMovingAvgCount = Math.abs(movingAvgCount);
+        if(absMovingAvgCount > 1) {
+            TimeSeries mavSeries = MovingAverage.createMovingAverage(series,
+                seriesName + " (" + movingAvgCount + " pt MA)",
+                absMovingAvgCount, 0);
+            dataset.addSeries(mavSeries);
+            int mavSeriesIndex = dataset.indexOf(mavSeries);
+            renderer.setSeriesPaint(mavSeriesIndex, paint);
+        }
     }
 
     /**

@@ -125,6 +125,23 @@ public class Settings implements IConstants
     }
 
     /**
+     * Copies the values in the given settings to this settings.
+     * 
+     * @param settings
+     */
+    public void copyFrom(Settings settings) {
+        this.defaultDirectory = settings.defaultDirectory;
+
+        this.hrVisible = settings.hrVisible;
+        this.speedVisible = settings.speedVisible;
+        this.eleVisible = settings.eleVisible;
+
+        this.hrRollingAvgCount = settings.hrRollingAvgCount;
+        this.speedRollingAvgCount = settings.speedRollingAvgCount;
+        this.eleRollingAvgCount = settings.eleRollingAvgCount;
+    }
+
+    /**
      * @return The value of defaultDirectory.
      */
     public String getDefaultDirectory() {

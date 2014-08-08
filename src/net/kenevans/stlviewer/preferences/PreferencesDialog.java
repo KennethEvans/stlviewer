@@ -21,7 +21,9 @@ import net.kenevans.stlviewer.model.IConstants;
 import net.kenevans.stlviewer.ui.STLViewer;
 
 /**
- * PreferencesDialog is a dialog to set the Preferences for STLViewer.
+ * PreferencesDialog is a dialog to set the Preferences for STLViewer. It only
+ * returns after Cancel. It can save the values to the preference store or set
+ * them in the viewer. In either case it remains visible.
  * 
  * @author Kenneth Evans, Jr.
  */
@@ -29,7 +31,10 @@ public class PreferencesDialog extends JDialog implements IConstants
 {
     private static final long serialVersionUID = 1L;
     private STLViewer viewer;
-    private boolean ok = false;
+    /**
+     * The return value. It is always true.
+     */
+    private boolean ok = true;
 
     JTextField defaultDirText;
     JCheckBox hrVisibileCheck;
@@ -248,34 +253,34 @@ public class PreferencesDialog extends JDialog implements IConstants
         gbc.weightx = 100;
         eleGroup.add(eleRavCountText, gbc);
 
-        // Dummy Group
-        JPanel dummyGroup = new JPanel();
-        dummyGroup.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createTitledBorder("Dummy"),
-            BorderFactory.createEmptyBorder(2, 2, 2, 2)));
-        gridy++;
-        dummyGroup.setLayout(new GridBagLayout());
-        gbc = (GridBagConstraints)gbcDefault.clone();
-        gbc.gridx = 0;
-        gbc.gridy = gridy;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 100;
-        contentPane.add(dummyGroup, gbc);
-
-        // Dummy
-        label = new JLabel("Dummy:");
-        label.setToolTipText("Dummy.");
-        gbc = (GridBagConstraints)gbcDefault.clone();
-        gbc.gridx = 0;
-        dummyGroup.add(label, gbc);
-
-        JTextField dummyText = new JTextField(30);
-        dummyText.setToolTipText(label.getText());
-        gbc = (GridBagConstraints)gbcDefault.clone();
-        gbc.gridx = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 100;
-        dummyGroup.add(dummyText, gbc);
+        // // Dummy Group
+        // JPanel dummyGroup = new JPanel();
+        // dummyGroup.setBorder(BorderFactory.createCompoundBorder(
+        // BorderFactory.createTitledBorder("Dummy"),
+        // BorderFactory.createEmptyBorder(2, 2, 2, 2)));
+        // gridy++;
+        // dummyGroup.setLayout(new GridBagLayout());
+        // gbc = (GridBagConstraints)gbcDefault.clone();
+        // gbc.gridx = 0;
+        // gbc.gridy = gridy;
+        // gbc.fill = GridBagConstraints.HORIZONTAL;
+        // gbc.weightx = 100;
+        // contentPane.add(dummyGroup, gbc);
+        //
+        // // Dummy
+        // label = new JLabel("Dummy:");
+        // label.setToolTipText("Dummy.");
+        // gbc = (GridBagConstraints)gbcDefault.clone();
+        // gbc.gridx = 0;
+        // dummyGroup.add(label, gbc);
+        //
+        // JTextField dummyText = new JTextField(30);
+        // dummyText.setToolTipText(label.getText());
+        // gbc = (GridBagConstraints)gbcDefault.clone();
+        // gbc.gridx = 1;
+        // gbc.fill = GridBagConstraints.HORIZONTAL;
+        // gbc.weightx = 100;
+        // dummyGroup.add(dummyText, gbc);
 
         // Button panel /////////////////////////////////////////////////////
         gridy++;
@@ -338,24 +343,17 @@ public class PreferencesDialog extends JDialog implements IConstants
         button.setToolTipText("Save the changes as preferences.");
         button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent e) {
-                boolean result = setPreferencesFromValues();
-                if(result) {
-                    Utils.infoMsg("Preferences set successfully");
-                }
+                save();
             }
         });
         buttonPanel.add(button);
 
         button = new JButton();
         button.setText("Set Current");
-        button.setToolTipText("Quit and set the current values in the viewer.");
+        button.setToolTipText("Set the current values in the viewer.");
         button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent e) {
-                boolean result = setPreferencesFromValues();
-                if(result) {
-                    ok = result;
-                    PreferencesDialog.this.setVisible(false);
-                }
+                setToViewer();
             }
         });
         buttonPanel.add(button);
@@ -442,14 +440,17 @@ public class PreferencesDialog extends JDialog implements IConstants
     }
 
     /**
-     * Collects the values of the components, and if they are valid, then calls
-     * the saveFile method in the viewer.
+     * Sets the current values in the given Settings then checks if they are
+     * valid.
      * 
-     * @return True on success to close the dialog or false otherwise to leave
-     *         the dialog up.
+     * @param settings
+     * @return True if they are valid, else false.
      */
-    public boolean setPreferencesFromValues() {
-        Settings settings = new Settings();
+    public boolean setSettingsFromValues(Settings settings) {
+        if(settings == null) {
+            Utils.errMsg("Input settings is null");
+            return false;
+        }
         try {
             settings.setDefaultDirectory(defaultDirText.getText());
 
@@ -471,21 +472,62 @@ public class PreferencesDialog extends JDialog implements IConstants
         // Check if the values are valid
         boolean res = settings.checkValues(true);
         if(!res) {
-            Utils.errMsg("Aborting: Invalid values");
-            return false;
+            Utils.errMsg("Some values are invalid");
         }
-
-        // Save them
-        res = settings.saveToPreferences(true);
-        if(!res) {
-            Utils.errMsg("Error setting preferences");
-            return false;
-        }
-        return true;
+        return res;
     }
 
     /**
-     * Shows the dialog and returns whether it was successful or not.
+     * Saves the current values to the preference store if they are valid.
+     */
+    public void save() {
+        Settings settings = new Settings();
+        boolean res = setSettingsFromValues(settings);
+        if(!res) {
+            Utils.errMsg("Aborting");
+            return;
+        }
+        // Save to the preference store
+        try {
+            res = settings.saveToPreferences(true);
+        } catch(Exception ex) {
+            Utils.excMsg("Error saving preferences", ex);
+            return;
+        }
+        if(res) {
+            Utils.errMsg("Preferences saved successfully");
+        } else {
+            Utils.errMsg("Error saving preferences");
+        }
+    }
+
+    /**
+     * Sets the current values to the viewer if they are valid.
+     */
+    public void setToViewer() {
+        Settings settings = new Settings();
+        boolean res = setSettingsFromValues(settings);
+        if(!res) {
+            Utils.errMsg("Aborting");
+            return;
+        }
+        // Copy to the viewer settings
+        try {
+            viewer.onPreferenceReset(settings);
+        } catch(Exception ex) {
+            Utils.excMsg("Error setting viewer settings", ex);
+            return;
+        }
+        if(res) {
+            Utils.errMsg("Viewer settings set successfully");
+        } else {
+            Utils.errMsg("Error setting viewer settings");
+        }
+    }
+
+    /**
+     * Shows the dialog and returns whether it was successful or not. However
+     * currently it is always successful and returns only on Cancel.
      * 
      * @return
      */

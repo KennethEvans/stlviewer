@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileFilter;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -19,6 +20,7 @@ import java.util.prefs.Preferences;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -345,8 +347,7 @@ public class STLViewer extends JFrame implements IConstants
             // frame.setLocationRelativeTo(null);
 
             // Set the icon
-            ImageUtils.setIconImageFromResource(this,
-                "/resources/HeartMonitor.36x36.png");
+            ImageUtils.setIconImageFromResource(this, "/resources/STLViewer32x32.png");
 
             // Has to be done here. The menus are not part of the JPanel.
             initMenus();
@@ -512,25 +513,32 @@ public class STLViewer extends JFrame implements IConstants
      * Brings up a dialog to set preferences.
      */
     private void setPreferences() {
-        // Save old values
-        String defaultDirectoryOld = settings.getDefaultDirectory();
-
         PreferencesDialog dialog = new PreferencesDialog(this, this);
         dialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
         dialog.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        // URL url = FractalBrowser.class
-        // .getResource("/resources/FractalBrowser.32x32.png");
-        // if(url != null) {
-        // dialog.setIconImage(new ImageIcon(url).getImage());
-        // }
-        boolean ok = dialog.showDialog();
-        if(ok) {
-            loadUserPreferences();
-            // TODO
-            plot.reset();
-            if(!settings.getDefaultDirectory().equals(defaultDirectoryOld)) {
-                findFileNames(settings.getDefaultDirectory());
-            }
+        URL url = STLViewer.class.getResource("/resources/STLViewer32x32.png");
+        if(url != null) {
+            dialog.setIconImage(new ImageIcon(url).getImage());
+        }
+        // This only returns on Cancel and always returns true. All actions are
+        // done from the dialog.
+        dialog.showDialog();
+    }
+
+    /**
+     * Copies the given settings to settings and resets the viewer.
+     * 
+     * @param settings
+     */
+    public void onPreferenceReset(Settings settings) {
+        // Save old values
+        String defaultDirectoryOld = this.settings.getDefaultDirectory();
+
+        // Copy from the given settings.
+        this.settings.copyFrom(settings);
+        plot.reset();
+        if(!this.settings.getDefaultDirectory().equals(defaultDirectoryOld)) {
+            findFileNames(settings.getDefaultDirectory());
         }
     }
 
@@ -619,7 +627,6 @@ public class STLViewer extends JFrame implements IConstants
     public static Preferences getUserPreferences() {
         return Preferences.userRoot().node(P_PREFERENCE_NODE);
     }
-    
 
     /**
      * @return The value of settings.

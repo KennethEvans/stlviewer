@@ -102,11 +102,13 @@ public class STLPlot implements IConstants
             // Don't use Boolean.getBoolean. It gets a system value with that
             // name
             new HrDataType(plot, D_HR_NAME, HR_INDEX, Color.decode(D_HR_COLOR),
-                settings.getHrVisible()),
+                settings.getHrVisible(), settings.getHrRollingAvgCount()),
             new DataType(plot, D_SPEED_NAME, SPEED_INDEX,
-                Color.decode(D_SPEED_COLOR), settings.getSpeedVisible()),
+                Color.decode(D_SPEED_COLOR), settings.getSpeedVisible(),
+                settings.getSpeedRollingAvgCount()),
             new DataType(plot, D_ELE_NAME, ELE_INDEX,
-                Color.decode(D_ELE_COLOR), settings.getEleVisible()),
+                Color.decode(D_ELE_COLOR), settings.getEleVisible(),
+                settings.getEleRollingAvgCount()),
         // Comment to keep brace on a separate line
         };
 
@@ -313,11 +315,13 @@ public class STLPlot implements IConstants
             // Don't use Boolean.getBoolean. It gets a system value with that
             // name
             new HrDataType(plot, D_HR_NAME, HR_INDEX, Color.decode(D_HR_COLOR),
-                settings.getHrVisible()),
+                settings.getHrVisible(), settings.getHrRollingAvgCount()),
             new DataType(plot, D_SPEED_NAME, SPEED_INDEX,
-                Color.decode(D_SPEED_COLOR), settings.getSpeedVisible()),
+                Color.decode(D_SPEED_COLOR), settings.getSpeedVisible(),
+                settings.getSpeedRollingAvgCount()),
             new DataType(plot, D_ELE_NAME, ELE_INDEX,
-                Color.decode(D_ELE_COLOR), settings.getEleVisible()),
+                Color.decode(D_ELE_COLOR), settings.getEleVisible(),
+                settings.getEleRollingAvgCount()),
         // Comment to keep brace on a separate line
         };
 
