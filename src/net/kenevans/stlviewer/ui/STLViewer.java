@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
-import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -347,7 +346,8 @@ public class STLViewer extends JFrame implements IConstants
             // frame.setLocationRelativeTo(null);
 
             // Set the icon
-            ImageUtils.setIconImageFromResource(this, "/resources/STLViewer32x32.png");
+            ImageUtils.setIconImageFromResource(this,
+                "/resources/STLViewer32x32.png");
 
             // Has to be done here. The menus are not part of the JPanel.
             initMenus();
@@ -514,15 +514,18 @@ public class STLViewer extends JFrame implements IConstants
      */
     private void setPreferences() {
         PreferencesDialog dialog = new PreferencesDialog(this, this);
-        dialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+        // For modal, use this and dialog.showDialog() instead of
+        // dialog.setVisible(true)
+        // dialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
         dialog.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         URL url = STLViewer.class.getResource("/resources/STLViewer32x32.png");
         if(url != null) {
             dialog.setIconImage(new ImageIcon(url).getImage());
         }
+        dialog.setVisible(true);
         // This only returns on Cancel and always returns true. All actions are
         // done from the dialog.
-        dialog.showDialog();
+        // dialog.showDialog();
     }
 
     /**
