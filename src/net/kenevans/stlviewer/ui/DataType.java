@@ -84,12 +84,23 @@ public class DataType implements IConstants
         dataset = new TimeSeriesCollection();
         renderer = new XYLineAndShapeRenderer();
 
-        addSeries(dataset, name, paint, timeVals, yVals);
+        addSeries(dataset, name, paint, timeVals, yVals, movingAvgCount);
         return dataset;
     }
 
+    /**
+     * Adds a series to the given dataset.
+     * 
+     * @param dataset
+     * @param seriesName Name of the series.
+     * @param paint Paint (color) to use for the series.
+     * @param timeVals Array of time values.
+     * @param yVals Array of data values.
+     * @param movingAvgCount The movingAverageCount. Use 0 for the zone
+     *            boundaries.
+     */
     protected void addSeries(TimeSeriesCollection dataset, String seriesName,
-        Paint paint, long[] timeVals, double[] yVals) {
+        Paint paint, long[] timeVals, double[] yVals, int movingAvgCount) {
         int nPoints = timeVals.length;
         int nDataPoints = yVals.length;
         TimeSeries series = new TimeSeries(seriesName);

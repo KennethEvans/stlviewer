@@ -71,9 +71,10 @@ public class HrDataType extends DataType
             double[] zoneVals = new double[1];
             for(int i = 0; i < nZones; i++) {
                 zoneVals[0] = hrZones[i];
+                // Use 0 to not do a moving average
                 addSeries(dataset, String.format(BOUNDARY_SERIES_NAME_PREFIX
                     + "%.0f", hrZones[i]), zoneColors[i], zoneTimeVals,
-                    zoneVals);
+                    zoneVals, 0);
             }
         }
 

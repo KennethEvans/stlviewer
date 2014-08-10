@@ -22,6 +22,7 @@ import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.title.TextTitle;
+import org.jfree.data.general.Series;
 import org.jfree.data.time.TimeSeriesCollection;
 
 /*
@@ -391,7 +392,6 @@ public class STLPlot implements IConstants
             chart.removeSubtitle(subTitle);
             subTitle.setText(model.getFileName());
             chart.addSubtitle(subTitle);
-
             int datasetIndex, axisIndex;
             long[] timeVals;
             double[] yVals;
@@ -447,7 +447,6 @@ public class STLPlot implements IConstants
                 if(!type.getVisible()) {
                     plot.getRangeAxis(axisIndex).setVisible(false);
                     plot.setDataset(datasetIndex, null);
-                    continue;
                 }
             }
             setAllMarkers();
@@ -455,6 +454,37 @@ public class STLPlot implements IConstants
             Utils.excMsg("Error adding data to plot", ex);
             ex.printStackTrace();
         }
+    }
+
+    /**
+     * Generated information about the given plot.
+     * 
+     * @param prefix
+     * @param plot
+     * @return
+     */
+    public static String dumpXYPlot(String prefix, XYPlot plot) {
+        String info = prefix;
+        int nDatasets = plot.getDatasetCount();
+        info += "nDatasets=" + nDatasets + LS;
+        int nSeries = 0;
+        TimeSeriesCollection dataset;
+        Series series;
+        for(int i = 0; i < nDatasets; i++) {
+            dataset = (TimeSeriesCollection)plot.getDataset(i);
+            if(dataset == null) {
+                info += "Dataset " + i + ":  null" + LS;
+                continue;
+            }
+            nSeries = dataset.getSeriesCount();
+            info += "Dataset " + i + ":  nSeries=" + nSeries + LS;
+            for(int j = 0; j < nSeries; j++) {
+                series = dataset.getSeries(j);
+                info += "  Series " + j + ": \"" + series.getKey()
+                    + "\" nItems=" + series.getItemCount() + LS;
+            }
+        }
+        return info;
     }
 
     /**
