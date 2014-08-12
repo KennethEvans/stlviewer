@@ -99,6 +99,11 @@ public class STLPlot implements IConstants
 
         XYPlot plot = chart.getXYPlot();
         Settings settings = getSettings();
+        
+        // Makes the grid lines easier to see
+        plot.setRangeGridlinePaint(Color.BLACK);
+        plot.setDomainGridlinePaint(Color.BLACK);
+        
         dataTypes = new DataType[] {
             // Don't use Boolean.getBoolean. It gets a system value with that
             // name
