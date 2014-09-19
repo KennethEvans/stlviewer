@@ -7,7 +7,7 @@ import net.kenevans.stlviewer.model.IConstants;
 
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
-import org.jfree.data.time.Minute;
+import org.jfree.data.time.FixedMillisecond;
 import org.jfree.data.time.MovingAverage;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
@@ -107,9 +107,9 @@ public class DataType implements IConstants
 
         for(int n = 0; n < nPoints; n++) {
             if(nDataPoints == 1) {
-                series.addOrUpdate(new Minute(new Date(timeVals[n])), yVals[0]);
+                series.addOrUpdate(new FixedMillisecond(new Date(timeVals[n])), yVals[0]);
             } else {
-                series.addOrUpdate(new Minute(new Date(timeVals[n])), yVals[n]);
+                series.addOrUpdate(new FixedMillisecond(new Date(timeVals[n])), yVals[n]);
             }
         }
 
