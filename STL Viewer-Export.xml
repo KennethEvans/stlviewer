@@ -6,27 +6,26 @@
         <jar destfile="C:/Deploy/STL Viewer/stlViewer.jar">
             <manifest>
                 <attribute name="Main-Class" value="net.kenevans.stlviewer.ui.STLViewer"/>
-                <attribute name="Class-Path" value=". stlViewer_lib/org.eclipse.ui_3.106.0.v20140519-0906.jar stlViewer_lib/org.eclipse.swt_3.103.0.v20140605-2008.jar stlViewer_lib/org.eclipse.swt.win32.win32.x86_3.103.0.v20140605-2012.jar stlViewer_lib/org.eclipse.jface_3.10.0.v20140604-0740.jar stlViewer_lib/org.eclipse.core.commands_3.6.100.v20140528-1422.jar stlViewer_lib/org.eclipse.ui.workbench_3.106.0.v20140530-0732.jar stlViewer_lib/org.eclipse.e4.ui.workbench3_0.12.0.v20140227-2118.jar stlViewer_lib/org.eclipse.core.runtime_3.10.0.v20140318-2214.jar stlViewer_lib/javax.annotation_1.2.0.v201401042248.jar stlViewer_lib/javax.inject_1.0.0.v20091030.jar stlViewer_lib/org.eclipse.osgi_3.10.0.v20140606-1445.jar stlViewer_lib/org.eclipse.osgi.compatibility.state_1.0.0.v20140403-1907.jar stlViewer_lib/org.eclipse.equinox.common_3.6.200.v20130402-1505.jar stlViewer_lib/org.eclipse.core.jobs_3.6.0.v20140424-0053.jar stlViewer_lib/runtime_registry_compatibility.jar stlViewer_lib/org.eclipse.equinox.registry_3.5.400.v20140428-1507.jar stlViewer_lib/org.eclipse.equinox.preferences_3.5.200.v20140224-1527.jar stlViewer_lib/org.eclipse.core.contenttype_3.4.200.v20140207-1251.jar stlViewer_lib/org.eclipse.equinox.app_1.3.200.v20130910-1609.jar stlViewer_lib/org.eclipse.core.resources_3.9.0.v20140514-1307.jar stlViewer_lib/org.eclipse.core.filesystem_1.4.100.v20140514-1614.jar stlViewer_lib/org.eclipse.ui.ide_3.10.0.v20140521-1937.jar stlViewer_lib/org.eclipse.ui.views_3.7.0.v20140408-0703.jar stlViewer_lib/activation.jar stlViewer_lib/jaxb1-impl.jar stlViewer_lib/jaxb-api.jar stlViewer_lib/jsr173_1.0_api.jar stlViewer_lib/jaxb-impl.jar stlViewer_lib/jaxb-xjc.jar stlViewer_lib/jaxb1-impl-src.zip stlViewer_lib/jaxb-api-doc.zip stlViewer_lib/jaxb-api-src.zip stlViewer_lib/jaxb-impl.src.zip stlViewer_lib/jaxb-xjc.src.zip stlViewer_lib/iText-2.1.5.jar stlViewer_lib/hamcrest-core-1.3.jar stlViewer_lib/jcommon-1.0.23.jar stlViewer_lib/jfreechart-1.0.19-experimental.jar stlViewer_lib/jfreechart-1.0.19-swt.jar stlViewer_lib/jfreechart-1.0.19.jar stlViewer_lib/jfreesvg-2.0.jar stlViewer_lib/junit-4.11.jar stlViewer_lib/orsoncharts-1.4-eval-nofx.jar stlViewer_lib/orsonpdf-1.6-eval.jar stlViewer_lib/servlet.jar stlViewer_lib/swtgraphics2d.jar"/>
+                <attribute name="Class-Path" value=". stlViewer_lib/org.eclipse.ui_3.106.0.v20140812-1751.jar stlViewer_lib/org.eclipse.swt_3.103.1.v20140903-1938.jar stlViewer_lib/org.eclipse.swt.win32.win32.x86_3.103.1.v20140903-1947.jar stlViewer_lib/org.eclipse.jface_3.10.1.v20140813-1009.jar stlViewer_lib/org.eclipse.core.commands_3.6.100.v20140528-1422.jar stlViewer_lib/org.eclipse.ui.workbench_3.106.1.v20140827-1737.jar stlViewer_lib/org.eclipse.e4.ui.workbench3_0.12.0.v20140227-2118.jar stlViewer_lib/org.eclipse.core.runtime_3.10.0.v20140318-2214.jar stlViewer_lib/javax.annotation_1.2.0.v201401042248.jar stlViewer_lib/javax.inject_1.0.0.v20091030.jar stlViewer_lib/org.eclipse.osgi_3.10.1.v20140909-1633.jar stlViewer_lib/org.eclipse.osgi.compatibility.state_1.0.1.v20140709-1414.jar stlViewer_lib/org.eclipse.equinox.common_3.6.200.v20130402-1505.jar stlViewer_lib/org.eclipse.core.jobs_3.6.0.v20140424-0053.jar stlViewer_lib/runtime_registry_compatibility.jar stlViewer_lib/org.eclipse.equinox.registry_3.5.400.v20140428-1507.jar stlViewer_lib/org.eclipse.equinox.preferences_3.5.200.v20140224-1527.jar stlViewer_lib/org.eclipse.core.contenttype_3.4.200.v20140207-1251.jar stlViewer_lib/org.eclipse.equinox.app_1.3.200.v20130910-1609.jar stlViewer_lib/org.eclipse.core.resources_3.9.1.v20140825-1431.jar stlViewer_lib/org.eclipse.core.filesystem_1.4.100.v20140514-1614.jar stlViewer_lib/org.eclipse.ui.ide_3.10.1.v20140828-0944.jar stlViewer_lib/org.eclipse.ui.views_3.7.0.v20140408-0703.jar stlViewer_lib/activation.jar stlViewer_lib/jaxb1-impl.jar stlViewer_lib/jaxb-api.jar stlViewer_lib/jsr173_1.0_api.jar stlViewer_lib/jaxb-impl.jar stlViewer_lib/jaxb-xjc.jar stlViewer_lib/jaxb1-impl-src.zip stlViewer_lib/jaxb-api-doc.zip stlViewer_lib/jaxb-api-src.zip stlViewer_lib/jaxb-impl.src.zip stlViewer_lib/jaxb-xjc.src.zip stlViewer_lib/jcommon-1.0.16.jar stlViewer_lib/jfreechart-1.0.13.jar"/>
             </manifest>
             <fileset dir="C:/eclipseWorkspaces/Work/net.kenevans.stlviewer/bin"/>
             <fileset dir="C:/eclipseWorkspaces/Work/net.kenevans.core.utils/bin"/>
             <fileset dir="C:/eclipseWorkspaces/Work/net.kenevans.gpx/bin"/>
-            <fileset dir="C:/eclipseWorkspaces/Work/net.kenevans.trackpointextensionv1/bin"/>
         </jar>
         <delete dir="C:/Deploy/STL Viewer/stlViewer_lib"/>
         <mkdir dir="C:/Deploy/STL Viewer/stlViewer_lib"/>
-        <copy file="C:/eclipse/plugins/org.eclipse.ui_3.106.0.v20140519-0906.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
-        <copy file="C:/eclipse/plugins/org.eclipse.swt_3.103.0.v20140605-2008.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
-        <copy file="C:/eclipse/plugins/org.eclipse.swt.win32.win32.x86_3.103.0.v20140605-2012.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
-        <copy file="C:/eclipse/plugins/org.eclipse.jface_3.10.0.v20140604-0740.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
+        <copy file="C:/eclipse/plugins/org.eclipse.ui_3.106.0.v20140812-1751.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
+        <copy file="C:/eclipse/plugins/org.eclipse.swt_3.103.1.v20140903-1938.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
+        <copy file="C:/eclipse/plugins/org.eclipse.swt.win32.win32.x86_3.103.1.v20140903-1947.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
+        <copy file="C:/eclipse/plugins/org.eclipse.jface_3.10.1.v20140813-1009.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
         <copy file="C:/eclipse/plugins/org.eclipse.core.commands_3.6.100.v20140528-1422.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
-        <copy file="C:/eclipse/plugins/org.eclipse.ui.workbench_3.106.0.v20140530-0732.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
+        <copy file="C:/eclipse/plugins/org.eclipse.ui.workbench_3.106.1.v20140827-1737.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
         <copy file="C:/eclipse/plugins/org.eclipse.e4.ui.workbench3_0.12.0.v20140227-2118.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
         <copy file="C:/eclipse/plugins/org.eclipse.core.runtime_3.10.0.v20140318-2214.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
         <copy file="C:/eclipse/plugins/javax.annotation_1.2.0.v201401042248.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
         <copy file="C:/eclipse/plugins/javax.inject_1.0.0.v20091030.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
-        <copy file="C:/eclipse/plugins/org.eclipse.osgi_3.10.0.v20140606-1445.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
-        <copy file="C:/eclipse/plugins/org.eclipse.osgi.compatibility.state_1.0.0.v20140403-1907.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
+        <copy file="C:/eclipse/plugins/org.eclipse.osgi_3.10.1.v20140909-1633.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
+        <copy file="C:/eclipse/plugins/org.eclipse.osgi.compatibility.state_1.0.1.v20140709-1414.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
         <copy file="C:/eclipse/plugins/org.eclipse.equinox.common_3.6.200.v20130402-1505.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
         <copy file="C:/eclipse/plugins/org.eclipse.core.jobs_3.6.0.v20140424-0053.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
         <copy file="C:/eclipse/plugins/org.eclipse.core.runtime.compatibility.registry_3.5.300.v20140128-0851/runtime_registry_compatibility.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
@@ -34,9 +33,9 @@
         <copy file="C:/eclipse/plugins/org.eclipse.equinox.preferences_3.5.200.v20140224-1527.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
         <copy file="C:/eclipse/plugins/org.eclipse.core.contenttype_3.4.200.v20140207-1251.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
         <copy file="C:/eclipse/plugins/org.eclipse.equinox.app_1.3.200.v20130910-1609.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
-        <copy file="C:/eclipse/plugins/org.eclipse.core.resources_3.9.0.v20140514-1307.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
+        <copy file="C:/eclipse/plugins/org.eclipse.core.resources_3.9.1.v20140825-1431.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
         <copy file="C:/eclipse/plugins/org.eclipse.core.filesystem_1.4.100.v20140514-1614.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
-        <copy file="C:/eclipse/plugins/org.eclipse.ui.ide_3.10.0.v20140521-1937.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
+        <copy file="C:/eclipse/plugins/org.eclipse.ui.ide_3.10.1.v20140828-0944.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
         <copy file="C:/eclipse/plugins/org.eclipse.ui.views_3.7.0.v20140408-0703.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
         <copy file="C:/eclipseWorkspaces/Work/net.kenevans.jaxb/activation.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
         <copy file="C:/eclipseWorkspaces/Work/net.kenevans.jaxb/jaxb1-impl.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
@@ -49,17 +48,7 @@
         <copy file="C:/eclipseWorkspaces/Work/net.kenevans.jaxb/jaxb-api-src.zip" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
         <copy file="C:/eclipseWorkspaces/Work/net.kenevans.jaxb/jaxb-impl.src.zip" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
         <copy file="C:/eclipseWorkspaces/Work/net.kenevans.jaxb/jaxb-xjc.src.zip" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
-        <copy file="C:/eclipseWorkspaces/Work/net.kenevans.jfreechart/iText-2.1.5.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
-        <copy file="C:/eclipseWorkspaces/Work/net.kenevans.jfreechart/hamcrest-core-1.3.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
-        <copy file="C:/eclipseWorkspaces/Work/net.kenevans.jfreechart/jcommon-1.0.23.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
-        <copy file="C:/eclipseWorkspaces/Work/net.kenevans.jfreechart/jfreechart-1.0.19-experimental.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
-        <copy file="C:/eclipseWorkspaces/Work/net.kenevans.jfreechart/jfreechart-1.0.19-swt.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
-        <copy file="C:/eclipseWorkspaces/Work/net.kenevans.jfreechart/jfreechart-1.0.19.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
-        <copy file="C:/eclipseWorkspaces/Work/net.kenevans.jfreechart/jfreesvg-2.0.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
-        <copy file="C:/eclipseWorkspaces/Work/net.kenevans.jfreechart/junit-4.11.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
-        <copy file="C:/eclipseWorkspaces/Work/net.kenevans.jfreechart/orsoncharts-1.4-eval-nofx.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
-        <copy file="C:/eclipseWorkspaces/Work/net.kenevans.jfreechart/orsonpdf-1.6-eval.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
-        <copy file="C:/eclipseWorkspaces/Work/net.kenevans.jfreechart/servlet.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
-        <copy file="C:/eclipseWorkspaces/Work/net.kenevans.jfreechart/swtgraphics2d.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
+        <copy file="C:/eclipseWorkspaces/Work/net.kenevans.stlviewer/jcommon-1.0.16.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
+        <copy file="C:/eclipseWorkspaces/Work/net.kenevans.stlviewer/jfreechart-1.0.13.jar" todir="C:/Deploy/STL Viewer/stlViewer_lib"/>
     </target>
 </project>

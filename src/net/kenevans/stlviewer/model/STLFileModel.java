@@ -9,15 +9,17 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
 
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import net.kenevans.core.utils.Utils;
-import net.kenevans.gpx.ExtensionsType;
-import net.kenevans.gpx.GpxType;
-import net.kenevans.gpx.TrkType;
-import net.kenevans.gpx.TrksegType;
-import net.kenevans.gpx.WptType;
+import net.kenevans.gpxcombined.ExtensionsType;
+import net.kenevans.gpxcombined.GpxType;
+import net.kenevans.gpxcombined.TrackPointExtensionT;
+import net.kenevans.gpxcombined.TrkType;
+import net.kenevans.gpxcombined.TrksegType;
+import net.kenevans.gpxcombined.WptType;
 import net.kenevans.parser.GPXParser;
 import net.kenevans.stlviewer.utils.GpxUtils;
 
@@ -70,6 +72,7 @@ public class STLFileModel implements IConstants
         BigDecimal bdVal;
         double val;
         long time;
+        TrackPointExtensionT trackPointExt;
 
         // Get the tracks
         long lastTimeValue = -1;
@@ -136,37 +139,29 @@ public class STLFileModel implements IConstants
                     if(extensions != null) {
                         List<Object> objects = extensions.getAny();
                         for(Object object : objects) {
-                            if(object instanceof Node) {
-                                Node node = (Node)object;
-                                if(!node.getNodeName().equals(
-                                    "gpxtpx:TrackPointExtension")) {
-                                    continue;
+                            trackPointExt = null;
+                            if(object instanceof JAXBElement<?>) {
+                                JAXBElement<?> element = (JAXBElement<?>)object;
+                                if(element != null
+                                    && element.getValue() instanceof TrackPointExtensionT) {
+                                    trackPointExt = (TrackPointExtensionT)element
+                                        .getValue();
                                 }
-                                NodeList children = node.getChildNodes();
-                                int nChildren = children.getLength();
-                                for(int i = 0; i < nChildren; i++) {
-                                    Node node1 = children.item(i);
-                                    if(node1.getNodeName().equals("gpxtpx:hr")) {
-                                        try {
-                                            val = Double.parseDouble(node1
-                                                .getTextContent());
-                                        } catch(NumberFormatException ex) {
-                                            val = Double.NaN;
-                                        }
-                                        hrValsArray.add(val);
-                                        hrTimeValsArray.add(time);
-                                        lastTimeValue = time;
-                                        if(time < startHrTime) {
-                                            startHrTime = time;
-                                        }
-                                        if(time > endHrTime) {
-                                            endHrTime = time;
-                                        }
-                                        nHrValues++;
-                                        // System.out.println(val + " " +
-                                        // date.getTime());
-                                    }
+                            }
+                            if(trackPointExt != null) {
+                                val = trackPointExt.getHr();
+                                hrValsArray.add(val);
+                                hrTimeValsArray.add(time);
+                                lastTimeValue = time;
+                                if(time < startHrTime) {
+                                    startHrTime = time;
                                 }
+                                if(time > endHrTime) {
+                                    endHrTime = time;
+                                }
+                                nHrValues++;
+                                // System.out.println(val + " " +
+                                // date.getTime());
                             }
                         }
                     }
