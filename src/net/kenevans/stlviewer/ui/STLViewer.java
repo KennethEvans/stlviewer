@@ -342,7 +342,8 @@ public class STLViewer extends JFrame implements IConstants
             // JFrame.setDefaultLookAndFeelDecorated(true);
             // UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             this.setTitle(TITLE);
-            this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            // USE EXIT_ON_CLOSE not DISPOSE_ON_CLOSE to close any modeless dialogs
+            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             // frame.setLocationRelativeTo(null);
 
             // Set the icon
