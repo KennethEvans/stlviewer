@@ -3,10 +3,13 @@ package net.kenevans.stlviewer.model;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import javax.xml.bind.JAXBElement;
@@ -16,6 +19,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import net.kenevans.core.utils.Utils;
 import net.kenevans.gpxcombined.ExtensionsType;
 import net.kenevans.gpxcombined.GpxType;
+import net.kenevans.gpxcombined.Oruxmapsextensions;
 import net.kenevans.gpxcombined.TrackPointExtensionT;
 import net.kenevans.gpxcombined.TrkType;
 import net.kenevans.gpxcombined.TrksegType;
@@ -55,6 +59,8 @@ public class STLFileModel implements IConstants
     long startHrTime = Long.MAX_VALUE;
     long endHrTime;
 
+    SimpleDateFormat oruxMapsBpmFormatter;
+
     public STLFileModel(String fileName) {
         this.fileName = fileName;
         try {
@@ -70,15 +76,47 @@ public class STLFileModel implements IConstants
         ArrayList<Long> hrTimeValsArray = new ArrayList<Long>();
         ArrayList<Double> hrValsArray = new ArrayList<Double>();
         BigDecimal bdVal;
+        String bpm;
         double val;
         long time;
+        ExtensionsType extensions;
         TrackPointExtensionT trackPointExt;
+        Oruxmapsextensions oruxMapsExt;
+        boolean usingOruxMapBpm = false;
+        boolean res;
+        XMLGregorianCalendar xgcal;
+        GregorianCalendar gcal;
+        
+        oruxMapsBpmFormatter = new SimpleDateFormat(
+            "yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
+        oruxMapsBpmFormatter.setTimeZone(TimeZone.getTimeZone("GMT"));
 
         // Get the tracks
         long lastTimeValue = -1;
         List<TrkType> tracks = gpx.getTrk();
         for(TrkType track : tracks) {
             nTracks++;
+            // Check for an OruxMaps extension
+            usingOruxMapBpm = false;
+            extensions = track.getExtensions();
+            if(extensions != null) {
+                List<Object> objects = extensions.getAny();
+                for(Object object : objects) {
+                    oruxMapsExt = null;
+                    if(object instanceof Oruxmapsextensions) {
+                        oruxMapsExt = (Oruxmapsextensions)object;
+                        bpm = oruxMapsExt.getBpm();
+                        if(bpm != null && bpm.length() > 0) {
+                            res = getHrFromOruxMapsBpm(bpm, hrValsArray,
+                                hrTimeValsArray);
+                            if(res) {
+                                usingOruxMapBpm = true;
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
             List<TrksegType> trackSegments = track.getTrkseg();
             for(TrksegType trackSegment : trackSegments) {
                 nSegments++;
@@ -99,8 +137,8 @@ public class STLFileModel implements IConstants
                 List<WptType> trackPoints = trackSegment.getTrkpt();
                 for(WptType tpt : trackPoints) {
                     nTrackPoints++;
-                    XMLGregorianCalendar xgcal = tpt.getTime();
-                    GregorianCalendar gcal = xgcal.toGregorianCalendar(
+                    xgcal = tpt.getTime();
+                    gcal = xgcal.toGregorianCalendar(
                         TimeZone.getTimeZone("GMT"), null, null);
                     // Consider gcal.getTimeInMillis()
                     time = gcal.getTime().getTime();
@@ -134,9 +172,9 @@ public class STLFileModel implements IConstants
                     bdVal = tpt.getEle();
                     // Convert from m to ft
                     eleValsArray.add(bdVal.doubleValue() * GpxUtils.M2FT);
-                    // Extensions
-                    ExtensionsType extensions = tpt.getExtensions();
-                    if(extensions != null) {
+                    // Check extensions for HR
+                    extensions = tpt.getExtensions();
+                    if(!usingOruxMapBpm && extensions != null) {
                         List<Object> objects = extensions.getAny();
                         for(Object object : objects) {
                             trackPointExt = null;
@@ -162,9 +200,10 @@ public class STLFileModel implements IConstants
                                 nHrValues++;
                                 // System.out.println(val + " " +
                                 // date.getTime());
+                                break;
                             }
                         }
-                    }
+                    } // if(extensions != null)
                 }
             }
         }
@@ -246,6 +285,54 @@ public class STLFileModel implements IConstants
     // }
     // System.out.println("  Min: " + min + "  Max: " + max);
     // }
+
+    /**
+     * Gets the HR values for a track from an OxuxMapsExtension.
+     * 
+     * @param bpm The bpm string in the OruxMapsExtyension
+     * @return
+     */
+    boolean getHrFromOruxMapsBpm(String bpm, ArrayList<Double> hrValsArray,
+        ArrayList<Long> hrTimeValsArray) {
+        boolean res = true;
+        double hr;
+        if(bpm == null || bpm.length() == 0) {
+            return false;
+        }
+        
+        String[] tokens = bpm.split("\n");
+        String[] vals;
+        long time;
+        for(String token : tokens) {
+            vals = token.split(" ");
+            if(vals == null || vals.length != 2) {
+                continue;
+            }
+            // HR
+            try {
+                hr = Double.parseDouble(vals[0]);
+            } catch(NumberFormatException ex) {
+                hr = Double.NaN;
+            }
+            // Time
+            try {
+                time=oruxMapsBpmFormatter.parse(vals[1]).getTime();
+            } catch(Exception ex) {
+                res = false;
+                continue;
+            }
+            hrValsArray.add(hr);
+            hrTimeValsArray.add(time);
+            if(time < startHrTime) {
+                startHrTime = time;
+            }
+            if(time > endHrTime) {
+                endHrTime = time;
+            }
+            nHrValues++;
+        }
+        return res;
+    }
 
     /**
      * Prints information about the tracks.
