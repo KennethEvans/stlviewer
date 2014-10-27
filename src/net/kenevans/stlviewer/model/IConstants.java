@@ -83,6 +83,27 @@ public interface IConstants
     /*** The default value for the HR rolling average count. */
     public static final int D_HR_ROLLING_AVG_COUNT = 0;
 
+    // HR Zones
+    /** Index for HR */
+    public static int HR_ZONES_INDEX = 4;
+    /*** The preference name for the HR zones name. */
+    public static final String P_HR_ZONES_NAME = "hrZonesName";
+    /*** The default value for the HR zones name. */
+    public static final String D_HR_ZONES_NAME = "HR Zones";
+    /*** The preference name for the HR color. */
+    public static final String P_HR_ZONES_COLOR = "hrZonesColor";
+    /*** The default value for the HR zones color. */
+    public static final String D_HR_ZONES_COLOR = "0x000000";
+    /*** The preference name for the HR zones visibility. */
+    public static final String P_HR_ZONES_VISIBILITY = "hrZonesVisibility";
+    /*** The default value for the HR zones visibility. */
+    public static final boolean D_HR_ZONES_VISIBILITY = true;
+    /*** The preference name for the HR zones range axis. */
+    public static final String P_HR_RANGE_ZONES_AXIS = "hrZonesRangeAxis";
+    /*** The default value for the HR zones range axis. */
+    public static final String D_HR_RANGE_ZONES_AXIS = Integer
+        .toString(HR_INDEX);
+
     // Speed
     /** Index for SPEED */
     public static int SPEED_INDEX = 1;
@@ -93,7 +114,7 @@ public interface IConstants
     /*** The preference name for the Speed color. */
     public static final String P_SPEED_COLOR = "speedColor";
     /*** The default value for the Speed color. */
-    public static final String D_SPEED_COLOR = "0x0099FF";
+    public static final String D_SPEED_COLOR = "0x3CCFF";
     /*** The preference name for the Speed visibility. */
     public static final String P_SPEED_VISIBILITY = "speedVisibility";
     /*** The default value for the Speed visibility. */
@@ -122,7 +143,7 @@ public interface IConstants
     /*** The preference name for the Elevation color. */
     public static final String P_ELE_COLOR = "ElevationColor";
     /*** The default value for the Elevation color. */
-    public static final String D_ELE_COLOR = "0xFF0099";
+    public static final String D_ELE_COLOR = "0x000AA";
     /*** The preference name for the Elevation visibility. */
     public static final String P_ELE_VISIBILITY = "ElevationVisibility";
     /*** The default value for the Elevation visibility. */
@@ -140,7 +161,7 @@ public interface IConstants
     public static final double[] hrZones = {157, 141, 125, 109, 94, 78};
     /** Series colors (data, boundaries). */
     public static Paint[] zoneColors = {Color.RED, Color.decode("0xFFAA00"),
-        Color.ORANGE, Color.YELLOW, Color.GREEN, Color.BLUE};
+        Color.ORANGE, Color.YELLOW, Color.GREEN, Color.decode("0x0099FF")};
     /** The prefix used to represent a boundary in the series name. */
     public static final String BOUNDARY_SERIES_NAME_PREFIX = "HR=";
 

@@ -3,6 +3,7 @@ package net.kenevans.stlviewer.ui;
 import java.awt.Paint;
 
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYAreaRenderer;
 import org.jfree.data.time.TimeSeriesCollection;
 
 /*
@@ -11,7 +12,7 @@ import org.jfree.data.time.TimeSeriesCollection;
  */
 
 /**
- * HrDataType manages a heart rate data type. It differs from DataType by
+ * HrDataType manages a heart rate zone data type. It differs from DataType by
  * implementing zones in the plot.
  * 
  * @author Kenneth Evans, Jr.
@@ -60,7 +61,9 @@ public class HrDataType extends DataType
      */
     @Override
     public TimeSeriesCollection createDataset(long[] timeVals, double[] yVals) {
-        dataset = super.createDataset(timeVals, yVals);
+        dataset = new TimeSeriesCollection();
+        renderer = new XYAreaRenderer();
+        String key;
 
         // Add the zones
         int nPoints = timeVals.length;
@@ -69,12 +72,13 @@ public class HrDataType extends DataType
             long[] zoneTimeVals = {timeVals[0], timeVals[nPoints - 1]};
             // Only need an array of one since the value is constant
             double[] zoneVals = new double[1];
-            for(int i = 0; i < nZones; i++) {
+            for(int i = nZones - 1; i >= 0; i--) {
                 zoneVals[0] = hrZones[i];
+                key = String.format(BOUNDARY_SERIES_NAME_PREFIX + "%.0f",
+                    hrZones[i]);
                 // Use 0 to not do a moving average
-                addSeries(dataset, String.format(BOUNDARY_SERIES_NAME_PREFIX
-                    + "%.0f", hrZones[i]), zoneColors[i], zoneTimeVals,
-                    zoneVals, 0);
+                addSeries(dataset, key, zoneColors[i], zoneTimeVals, zoneVals,
+                    0);
             }
         }
 

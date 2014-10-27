@@ -38,6 +38,7 @@ public class PreferencesDialog extends JDialog implements IConstants
 
     JTextField defaultDirText;
     JCheckBox hrVisibileCheck;
+    JCheckBox hrZonesVisibileCheck;
     JCheckBox speedVisibileCheck;
     JCheckBox eleVisibileCheck;
     JTextField hrRavCountText;
@@ -156,6 +157,13 @@ public class PreferencesDialog extends JDialog implements IConstants
         gbc = (GridBagConstraints)gbcDefault.clone();
         gbc.gridx = 0;
         hrGroup.add(hrVisibileCheck, gbc);
+
+        // Zones visible
+        hrZonesVisibileCheck = new JCheckBox("Zones Visible");
+        hrZonesVisibileCheck.setToolTipText("Whether HR zones are visible.");
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 0;
+        hrGroup.add(hrZonesVisibileCheck, gbc);
 
         // Running average
         String toolTip = "Number of data points to average over.  "
@@ -418,6 +426,9 @@ public class PreferencesDialog extends JDialog implements IConstants
         if(hrVisibileCheck != null) {
             hrVisibileCheck.setSelected(settings.getHrVisible());
         }
+        if(hrZonesVisibileCheck != null) {
+            hrZonesVisibileCheck.setSelected(settings.getHrZonesVisible());
+        }
         if(speedVisibileCheck != null) {
             speedVisibileCheck.setSelected(settings.getSpeedVisible());
         }
@@ -455,6 +466,7 @@ public class PreferencesDialog extends JDialog implements IConstants
             settings.setDefaultDirectory(defaultDirText.getText());
 
             settings.setHrVisible(hrVisibileCheck.isSelected());
+            settings.setHrZonesVisible(hrZonesVisibileCheck.isSelected());
             settings.setSpeedVisible(speedVisibileCheck.isSelected());
             settings.setEleVisible(eleVisibileCheck.isSelected());
 
@@ -495,7 +507,7 @@ public class PreferencesDialog extends JDialog implements IConstants
             return;
         }
         if(res) {
-            Utils.errMsg("Preferences saved successfully");
+//            Utils.errMsg("Preferences saved successfully");
         } else {
             Utils.errMsg("Error saving preferences");
         }
@@ -519,7 +531,7 @@ public class PreferencesDialog extends JDialog implements IConstants
             return;
         }
         if(res) {
-            Utils.errMsg("Viewer settings set successfully");
+//            Utils.errMsg("Viewer settings set successfully");
         } else {
             Utils.errMsg("Error setting viewer settings");
         }

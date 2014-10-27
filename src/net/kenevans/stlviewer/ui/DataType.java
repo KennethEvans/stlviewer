@@ -6,6 +6,7 @@ import java.util.Date;
 import net.kenevans.stlviewer.model.IConstants;
 
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.AbstractXYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.time.FixedMillisecond;
 import org.jfree.data.time.MovingAverage;
@@ -34,7 +35,7 @@ public class DataType implements IConstants
 
     protected XYPlot plot;
     protected TimeSeriesCollection dataset;
-    protected XYLineAndShapeRenderer renderer;
+    protected AbstractXYItemRenderer renderer;
 
     /**
      * DataType constructor that sets the axisIndex the same as the
@@ -107,9 +108,11 @@ public class DataType implements IConstants
 
         for(int n = 0; n < nPoints; n++) {
             if(nDataPoints == 1) {
-                series.addOrUpdate(new FixedMillisecond(new Date(timeVals[n])), yVals[0]);
+                series.addOrUpdate(new FixedMillisecond(new Date(timeVals[n])),
+                    yVals[0]);
             } else {
-                series.addOrUpdate(new FixedMillisecond(new Date(timeVals[n])), yVals[n]);
+                series.addOrUpdate(new FixedMillisecond(new Date(timeVals[n])),
+                    yVals[n]);
             }
         }
 
@@ -222,7 +225,7 @@ public class DataType implements IConstants
     /**
      * @return The value of renderer.
      */
-    public XYLineAndShapeRenderer getRenderer() {
+    public AbstractXYItemRenderer getRenderer() {
         return renderer;
     }
 

@@ -20,6 +20,7 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.AbstractXYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.data.general.Series;
@@ -63,6 +64,7 @@ public class STLPlot implements IConstants
     private DataType[] dataTypes;
 
     private JCheckBoxMenuItem hrVisibleItem;
+    private JCheckBoxMenuItem hrZonesVisibleItem;
     private JCheckBoxMenuItem speedVisibleItem;
     private JCheckBoxMenuItem eleVisibleItem;
 
@@ -99,15 +101,15 @@ public class STLPlot implements IConstants
 
         XYPlot plot = chart.getXYPlot();
         Settings settings = getSettings();
-        
+
         // Makes the grid lines easier to see
         plot.setRangeGridlinePaint(Color.BLACK);
         plot.setDomainGridlinePaint(Color.BLACK);
-        
+
         dataTypes = new DataType[] {
             // Don't use Boolean.getBoolean. It gets a system value with that
             // name
-            new HrDataType(plot, D_HR_NAME, HR_INDEX, Color.decode(D_HR_COLOR),
+            new DataType(plot, D_HR_NAME, HR_INDEX, Color.decode(D_HR_COLOR),
                 settings.getHrVisible(), settings.getHrRollingAvgCount()),
             new DataType(plot, D_SPEED_NAME, SPEED_INDEX,
                 Color.decode(D_SPEED_COLOR), settings.getSpeedVisible(),
@@ -115,6 +117,8 @@ public class STLPlot implements IConstants
             new DataType(plot, D_ELE_NAME, ELE_INDEX,
                 Color.decode(D_ELE_COLOR), settings.getEleVisible(),
                 settings.getEleRollingAvgCount()),
+            new HrDataType(plot, D_HR_ZONES_NAME, HR_ZONES_INDEX,
+                Color.decode(D_HR_ZONES_COLOR), settings.getHrZonesVisible(), 0),
         // Comment to keep brace on a separate line
         };
 
@@ -197,6 +201,24 @@ public class STLPlot implements IConstants
             }
         });
         menu.add(hrVisibleItem);
+
+        hrZonesVisibleItem = new JCheckBoxMenuItem("HR Zones",
+            settings.getHrZonesVisible());
+        hrZonesVisibleItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                boolean selected = ((JCheckBoxMenuItem)ae.getSource())
+                    .isSelected();
+                int datasetIndex = HR_ZONES_INDEX;
+                DataType type = dataTypes[datasetIndex];
+                int axisIndex = type.getDatasetIndex();
+                type.setVisible(selected);
+                XYPlot plot = type.getPlot();
+                plot.getRangeAxis(axisIndex).setVisible(selected);
+                plot.setDataset(datasetIndex, selected ? type.getDataset()
+                    : null);
+            }
+        });
+        menu.add(hrZonesVisibleItem);
 
         speedVisibleItem = new JCheckBoxMenuItem("Speed",
             settings.getSpeedVisible());
@@ -308,6 +330,7 @@ public class STLPlot implements IConstants
         // Reset the context menu
         Settings settings = getSettings();
         hrVisibleItem.setSelected(settings.getHrVisible());
+        hrZonesVisibleItem.setSelected(settings.getHrZonesVisible());
         speedVisibleItem.setSelected(settings.getSpeedVisible());
         eleVisibleItem.setSelected(settings.getEleVisible());
 
@@ -320,7 +343,7 @@ public class STLPlot implements IConstants
         dataTypes = new DataType[] {
             // Don't use Boolean.getBoolean. It gets a system value with that
             // name
-            new HrDataType(plot, D_HR_NAME, HR_INDEX, Color.decode(D_HR_COLOR),
+            new DataType(plot, D_HR_NAME, HR_INDEX, Color.decode(D_HR_COLOR),
                 settings.getHrVisible(), settings.getHrRollingAvgCount()),
             new DataType(plot, D_SPEED_NAME, SPEED_INDEX,
                 Color.decode(D_SPEED_COLOR), settings.getSpeedVisible(),
@@ -328,6 +351,8 @@ public class STLPlot implements IConstants
             new DataType(plot, D_ELE_NAME, ELE_INDEX,
                 Color.decode(D_ELE_COLOR), settings.getEleVisible(),
                 settings.getEleRollingAvgCount()),
+            new HrDataType(plot, D_HR_ZONES_NAME, HR_ZONES_INDEX,
+                Color.decode(D_HR_ZONES_COLOR), settings.getHrZonesVisible(), 0),
         // Comment to keep brace on a separate line
         };
 
@@ -345,14 +370,16 @@ public class STLPlot implements IConstants
             return;
         }
         TimeSeriesCollection dataset;
-        XYLineAndShapeRenderer renderer;
+        AbstractXYItemRenderer renderer;
         for(DataType type : dataTypes) {
             dataset = type.getDataset();
             renderer = type.getRenderer();
             if(dataset != null) {
                 try {
-                    setSeriesMarkers((TimeSeriesCollection)dataset, renderer,
-                        showMarkers);
+                    if(renderer instanceof XYLineAndShapeRenderer) {
+                        setSeriesMarkers((TimeSeriesCollection)dataset,
+                            (XYLineAndShapeRenderer)renderer, showMarkers);
+                    }
                 } catch(Exception ex) {
                     Utils.excMsg("Error clearing plot", ex);
                 }
@@ -402,23 +429,36 @@ public class STLPlot implements IConstants
             double[] yVals;
             XYPlot plot;
             for(DataType type : dataTypes) {
-                datasetIndex = type.getDatasetIndex();
-                axisIndex = type.getAxisIndex();
-                // Axis
-                NumberAxis axis = new NumberAxis(type.getName());
-                axis.setFixedDimension(10.0);
-                axis.setAutoRangeIncludesZero(false);
-                axis.setAutoRange(true);
-                axis.setLabelPaint(type.getPaint());
-                axis.setTickLabelPaint(type.getPaint());
-                // Make the label font be the same as for the primary axis
-                // axis.setLabelFont(font);
                 plot = type.getPlot();
-                plot.setRangeAxis(axisIndex, axis);
+                datasetIndex = type.getDatasetIndex();
+                if(datasetIndex == HR_ZONES_INDEX) {
+                    // Use the HR axis
+                    axisIndex = dataTypes[HR_INDEX].getAxisIndex();
+                } else {
+                    axisIndex = type.getAxisIndex();
+                    // Axis
+                    NumberAxis axis = new NumberAxis(type.getName());
+                    axis.setFixedDimension(10.0);
+                    axis.setAutoRangeIncludesZero(false);
+                    axis.setAutoRange(true);
+                    axis.setLabelPaint(type.getPaint());
+                    axis.setTickLabelPaint(type.getPaint());
+                    // Make the label font be the same as for the primary axis
+                    // axis.setLabelFont(font);
+                    plot.setRangeAxis(axisIndex, axis);
+                }
                 // type.getPlot().setRangeAxisLocation(datasetIndex,
                 // AxisLocation.BOTTOM_OR_LEFT);
                 switch(datasetIndex) {
                 case HR_INDEX:
+                    timeVals = model.getHrTimeVals();
+                    yVals = model.getHrVals();
+                    type.createDataset(timeVals, yVals);
+                    plot.setDataset(datasetIndex, type.getDataset());
+                    plot.mapDatasetToRangeAxis(datasetIndex, axisIndex);
+                    plot.setRenderer(datasetIndex, type.getRenderer());
+                    break;
+                case HR_ZONES_INDEX:
                     timeVals = model.getHrTimeVals();
                     yVals = model.getHrVals();
                     type.createDataset(timeVals, yVals);
@@ -450,7 +490,9 @@ public class STLPlot implements IConstants
                 }
                 // Set the visibility
                 if(!type.getVisible()) {
-                    plot.getRangeAxis(axisIndex).setVisible(false);
+                    if(datasetIndex != HR_ZONES_INDEX) {
+                        plot.getRangeAxis(axisIndex).setVisible(false);
+                    }
                     plot.setDataset(datasetIndex, null);
                 }
             }

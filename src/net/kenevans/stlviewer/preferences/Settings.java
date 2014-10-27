@@ -22,6 +22,7 @@ public class Settings implements IConstants
     private String defaultDirectory = D_DEFAULT_DIR;
 
     private boolean hrVisible = D_HR_VISIBILITY;
+    private boolean hrZonesVisible = D_HR_ZONES_VISIBILITY;
     private boolean speedVisible = D_SPEED_VISIBILITY;
     private boolean eleVisible = D_ELE_VISIBILITY;
 
@@ -37,6 +38,8 @@ public class Settings implements IConstants
         defaultDirectory = prefs.get(P_DEFAULT_DIR, D_DEFAULT_DIR);
 
         hrVisible = prefs.getBoolean(P_HR_VISIBILITY, D_HR_VISIBILITY);
+        hrZonesVisible = prefs.getBoolean(P_HR_ZONES_VISIBILITY,
+            D_HR_ZONES_VISIBILITY);
         speedVisible = prefs.getBoolean(P_SPEED_VISIBILITY, D_SPEED_VISIBILITY);
         eleVisible = prefs.getBoolean(P_ELE_VISIBILITY, D_ELE_VISIBILITY);
 
@@ -65,6 +68,7 @@ public class Settings implements IConstants
             prefs.put(P_DEFAULT_DIR, defaultDirectory);
 
             prefs.putBoolean(P_HR_VISIBILITY, hrVisible);
+            prefs.putBoolean(P_HR_ZONES_VISIBILITY, hrZonesVisible);
             prefs.putBoolean(P_SPEED_VISIBILITY, speedVisible);
             prefs.putBoolean(P_ELE_VISIBILITY, eleVisible);
 
@@ -133,6 +137,7 @@ public class Settings implements IConstants
         this.defaultDirectory = settings.defaultDirectory;
 
         this.hrVisible = settings.hrVisible;
+        this.hrZonesVisible = settings.hrZonesVisible;
         this.speedVisible = settings.speedVisible;
         this.eleVisible = settings.eleVisible;
 
@@ -167,6 +172,20 @@ public class Settings implements IConstants
      */
     public void setHrVisible(boolean hrVisible) {
         this.hrVisible = hrVisible;
+    }
+
+    /**
+     * @return The value of hrZonesVisible.
+     */
+    public boolean getHrZonesVisible() {
+        return hrZonesVisible;
+    }
+
+    /**
+     * @param hrZonesVisible The new value for hrZonesVisible.
+     */
+    public void setHrZonesVisible(boolean hrZonesVisible) {
+        this.hrZonesVisible = hrZonesVisible;
     }
 
     /**
