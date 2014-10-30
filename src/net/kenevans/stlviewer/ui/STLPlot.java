@@ -429,6 +429,7 @@ public class STLPlot implements IConstants
             double[] yVals;
             XYPlot plot;
             for(DataType type : dataTypes) {
+                type.setSettings(getSettings());
                 plot = type.getPlot();
                 datasetIndex = type.getDatasetIndex();
                 if(datasetIndex == HR_ZONES_INDEX) {

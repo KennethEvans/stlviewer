@@ -1,6 +1,9 @@
 package net.kenevans.stlviewer.ui;
 
+import java.awt.Color;
 import java.awt.Paint;
+
+import net.kenevans.stlviewer.preferences.Settings;
 
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYAreaRenderer;
@@ -65,23 +68,38 @@ public class HrDataType extends DataType
         renderer = new XYAreaRenderer();
         String key;
 
+        if(settings == null) {
+            // This should not happen. The settings should be set before this
+            settings = new Settings();
+            settings.loadFromPreferences();
+        }
+        Paint[] zoneColors = {Color.decode(settings.getZone1Color()),
+            Color.decode(settings.getZone2Color()),
+            Color.decode(settings.getZone3Color()),
+            Color.decode(settings.getZone4Color()),
+            Color.decode(settings.getZone5Color()),
+            Color.decode(settings.getZone6Color())};
+        double[] zoneVals = {settings.getZone1Val(), settings.getZone2Val(),
+            settings.getZone3Val(), settings.getZone4Val(),
+            settings.getZone5Val(), settings.getZone6Val(),};
+
         // Add the zones
         int nPoints = timeVals.length;
         if(nPoints > 2 && timeVals[0] != timeVals[nPoints - 1]) {
-            int nZones = hrZones.length;
+            int nZones = zoneVals.length;
             long[] zoneTimeVals = {timeVals[0], timeVals[nPoints - 1]};
             // Only need an array of one since the value is constant
-            double[] zoneVals = new double[1];
-            for(int i = nZones - 1; i >= 0; i--) {
-                zoneVals[0] = hrZones[i];
+            double[] zoneVal = new double[1];
+            for(int i = 0; i < nZones; i++) {
+                zoneVal[0] = zoneVals[i];
                 key = String.format(BOUNDARY_SERIES_NAME_PREFIX + "%.0f",
-                    hrZones[i]);
+                    zoneVals[i]);
                 // Use 0 to not do a moving average
-                addSeries(dataset, key, zoneColors[i], zoneTimeVals, zoneVals,
-                    0);
+                addSeries(dataset, key, zoneColors[i], zoneTimeVals, zoneVal, 0);
             }
         }
 
         return dataset;
     }
+
 }

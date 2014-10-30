@@ -1,7 +1,6 @@
 package net.kenevans.stlviewer.model;
 
 import java.awt.Color;
-import java.awt.Paint;
 
 import net.kenevans.stlviewer.utils.GpxUtils;
 
@@ -156,12 +155,57 @@ public interface IConstants
     public static final String P_ELE_ROLLING_AVG_COUNT = "elevationRollingAvgCount";
     /*** The default value for the elevation rolling average count. */
     public static final int D_ELE_ROLLING_AVG_COUNT = 5;
+    
+    // Zones
+    /*** The preference name for zone 1 value. */
+    public static final String P_ZONE_1_VAL = "Zone1Value";
+    /*** The default value for zone 1 value. */
+    public static final int D_ZONE_1_VAL = 78;
+    /*** The preference name for the zone 1 color. */
+    public static final String P_ZONE_1_COLOR = "Zone1Color";
+    /*** The default value for zone 1 color. */
+    public static final String D_ZONE_1_COLOR = "0x0099FF";
+    /*** The preference name for zone 1 value. */
+    public static final String P_ZONE_2_VAL = "Zone2Value";
+    /*** The default value for zone 1 value. */
+    public static final int D_ZONE_2_VAL = 94;
+    /*** The preference name for the zone 1 color. */
+    public static final String P_ZONE_2_COLOR = "Zone2Color";
+    /*** The default value for zone 1 color. */
+    public static final String D_ZONE_2_COLOR = "0x00FF00";
+    /*** The preference name for zone 1 value. */
+    public static final String P_ZONE_3_VAL = "Zone3Value";
+    /*** The default value for zone 1 value. */
+    public static final int D_ZONE_3_VAL = 109;
+    /*** The preference name for the zone 1 color. */
+    public static final String P_ZONE_3_COLOR = "Zone3Color";
+    /*** The default value for zone 1 color. */
+    public static final String D_ZONE_3_COLOR = "0xFFFF00";
+    /*** The preference name for zone 1 value. */
+    public static final String P_ZONE_4_VAL = "Zone4Value";
+    /*** The default value for zone 1 value. */
+    public static final int D_ZONE_4_VAL = 125;
+    /*** The preference name for the zone 1 color. */
+    public static final String P_ZONE_4_COLOR = "Zone4Color";
+    /*** The default value for zone 1 color. */
+    public static final String D_ZONE_4_COLOR = "0xFFC800";
+    /*** The preference name for zone 1 value. */
+    public static final String P_ZONE_5_VAL = "Zone5Value";
+    /*** The default value for zone 1 value. */
+    public static final int D_ZONE_5_VAL = 141;
+    /*** The preference name for the zone 1 color. */
+    public static final String P_ZONE_5_COLOR = "Zone5Color";
+    /*** The default value for zone 1 color. */
+    public static final String D_ZONE_5_COLOR = "0xFf9000";
+    /*** The preference name for zone 1 value. */
+    public static final String P_ZONE_6_VAL = "Zone6Value";
+    /*** The default value for zone 1 value. */
+    public static final int D_ZONE_6_VAL = 157;
+    /*** The preference name for the zone 1 color. */
+    public static final String P_ZONE_6_COLOR = "Zone6Color";
+    /*** The default value for zone 1 color. */
+    public static final String D_ZONE_6_COLOR = "0xFF0000";
 
-    /** Zone boundaries */
-    public static final double[] hrZones = {157, 141, 125, 109, 94, 78};
-    /** Series colors (data, boundaries). */
-    public static Paint[] zoneColors = {Color.RED, Color.decode("0xFFAA00"),
-        Color.ORANGE, Color.YELLOW, Color.GREEN, Color.decode("0x0099FF")};
     /** The prefix used to represent a boundary in the series name. */
     public static final String BOUNDARY_SERIES_NAME_PREFIX = "HR=";
 

@@ -4,6 +4,7 @@ import java.awt.Paint;
 import java.util.Date;
 
 import net.kenevans.stlviewer.model.IConstants;
+import net.kenevans.stlviewer.preferences.Settings;
 
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.AbstractXYItemRenderer;
@@ -36,6 +37,8 @@ public class DataType implements IConstants
     protected XYPlot plot;
     protected TimeSeriesCollection dataset;
     protected AbstractXYItemRenderer renderer;
+
+    protected Settings settings;
 
     /**
      * DataType constructor that sets the axisIndex the same as the
@@ -227,6 +230,20 @@ public class DataType implements IConstants
      */
     public AbstractXYItemRenderer getRenderer() {
         return renderer;
+    }
+
+    /**
+     * @return The value of settings.
+     */
+    public Settings getSettings() {
+        return settings;
+    }
+
+    /**
+     * @param settings The new value for settings.
+     */
+    public void setSettings(Settings settings) {
+        this.settings = settings;
     }
 
 }

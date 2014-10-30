@@ -1,5 +1,6 @@
 package net.kenevans.stlviewer.preferences;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.GridBagConstraints;
@@ -10,6 +11,7 @@ import java.io.File;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JColorChooser;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -44,6 +46,20 @@ public class PreferencesDialog extends JDialog implements IConstants
     JTextField hrRavCountText;
     JTextField speedRavCountText;
     JTextField eleRavCountText;
+
+    JTextField zone1ValText;
+    JTextField zone2ValText;
+    JTextField zone3ValText;
+    JTextField zone4ValText;
+    JTextField zone5ValText;
+    JTextField zone6ValText;
+
+    JTextField zone1ColorText;
+    JTextField zone2ColorText;
+    JTextField zone3ColorText;
+    JTextField zone4ColorText;
+    JTextField zone5ColorText;
+    JTextField zone6ColorText;
 
     /**
      * Constructor
@@ -124,7 +140,7 @@ public class PreferencesDialog extends JDialog implements IConstants
         button.setText("Browse");
         button.setToolTipText("Choose the file.");
         button.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
+            public void actionPerformed(java.awt.event.ActionEvent ev) {
                 if(defaultDirText == null) {
                     return;
                 }
@@ -261,6 +277,316 @@ public class PreferencesDialog extends JDialog implements IConstants
         gbc.weightx = 100;
         eleGroup.add(eleRavCountText, gbc);
 
+        // Zone Group ///////////////////////////////////////////////////////
+        JPanel zoneGroup = new JPanel();
+        zoneGroup.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createTitledBorder("Zones"),
+            BorderFactory.createEmptyBorder(2, 2, 2, 2)));
+        gridy++;
+        zoneGroup.setLayout(new GridBagLayout());
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 0;
+        gbc.gridy = gridy;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 100;
+        contentPane.add(zoneGroup, gbc);
+        int zoneGridy = -1;
+
+        // Zone 1
+        zoneGridy++;
+        toolTip = "Value for zone 1";
+        label = new JLabel("Zone 1 Value:");
+        label.setToolTipText(toolTip);
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 0;
+        gbc.gridy = zoneGridy;
+        zoneGroup.add(label, gbc);
+
+        zone1ValText = new JTextField(5);
+        zone1ValText.setToolTipText(label.getText());
+        zone1ValText.setToolTipText(toolTip);
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridy = zoneGridy;
+        gbc.gridx = 1;
+        gbc.gridy = zoneGridy;
+        gbc.weightx = 100;
+        zoneGroup.add(zone1ValText, gbc);
+
+        toolTip = "Color for zone 1";
+        label = new JLabel("Zone 1 Color:");
+        label.setToolTipText(toolTip);
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 2;
+        gbc.gridy = zoneGridy;
+        zoneGroup.add(label, gbc);
+
+        zone1ColorText = new JTextField(10);
+        zone1ColorText.setToolTipText(label.getText());
+        zone1ColorText.setToolTipText(toolTip);
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 3;
+        gbc.gridy = zoneGridy;
+        gbc.weightx = 100;
+        zoneGroup.add(zone1ColorText, gbc);
+
+        button = new JButton();
+        button.setText("Pick Color");
+        button.setToolTipText("Pick the zone color.");
+        button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent ev) {
+                chooseZoneColor(ev, zone1ColorText);
+            }
+        });
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 4;
+        gbc.gridy = zoneGridy;
+        zoneGroup.add(button, gbc);
+
+        // Zone 2
+        zoneGridy++;
+        toolTip = "Value for zone 2";
+        label = new JLabel("Zone 2 Value:");
+        label.setToolTipText(toolTip);
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 0;
+        gbc.gridy = zoneGridy;
+        zoneGroup.add(label, gbc);
+
+        zone2ValText = new JTextField(5);
+        zone2ValText.setToolTipText(label.getText());
+        zone2ValText.setToolTipText(toolTip);
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 1;
+        gbc.gridy = zoneGridy;
+        gbc.weightx = 100;
+        zoneGroup.add(zone2ValText, gbc);
+
+        toolTip = "Color for zone 2";
+        label = new JLabel("Zone 2 Color:");
+        label.setToolTipText(toolTip);
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 2;
+        gbc.gridy = zoneGridy;
+        zoneGroup.add(label, gbc);
+
+        zone2ColorText = new JTextField(10);
+        zone2ColorText.setToolTipText(label.getText());
+        zone2ColorText.setToolTipText(toolTip);
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 3;
+        gbc.gridy = zoneGridy;
+        gbc.weightx = 100;
+        zoneGroup.add(zone2ColorText, gbc);
+
+        button = new JButton();
+        button.setText("Pick Color");
+        button.setToolTipText("Pick the zone color.");
+        button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent ev) {
+                chooseZoneColor(ev, zone2ColorText);
+            }
+        });
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 4;
+        gbc.gridy = zoneGridy;
+        zoneGroup.add(button, gbc);
+
+        // Zone 3
+        zoneGridy++;
+        toolTip = "Value for zone 3";
+        label = new JLabel("Zone 3 Value:");
+        label.setToolTipText(toolTip);
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 0;
+        gbc.gridy = zoneGridy;
+        zoneGroup.add(label, gbc);
+
+        zone3ValText = new JTextField(5);
+        zone3ValText.setToolTipText(label.getText());
+        zone3ValText.setToolTipText(toolTip);
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 1;
+        gbc.gridy = zoneGridy;
+        gbc.weightx = 100;
+        zoneGroup.add(zone3ValText, gbc);
+
+        toolTip = "Color for zone 3";
+        label = new JLabel("Zone 3 Color:");
+        label.setToolTipText(toolTip);
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 2;
+        gbc.gridy = zoneGridy;
+        zoneGroup.add(label, gbc);
+
+        zone3ColorText = new JTextField(10);
+        zone3ColorText.setToolTipText(label.getText());
+        zone3ColorText.setToolTipText(toolTip);
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 3;
+        gbc.gridy = zoneGridy;
+        gbc.weightx = 100;
+        zoneGroup.add(zone3ColorText, gbc);
+
+        button = new JButton();
+        button.setText("Pick Color");
+        button.setToolTipText("Pick the zone color.");
+        button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent ev) {
+                chooseZoneColor(ev, zone3ColorText);
+            }
+        });
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 4;
+        gbc.gridy = zoneGridy;
+        zoneGroup.add(button, gbc);
+
+        // Zone 4
+        zoneGridy++;
+        toolTip = "Value for zone 4";
+        label = new JLabel("Zone 4 Value:");
+        label.setToolTipText(toolTip);
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 0;
+        gbc.gridy = zoneGridy;
+        zoneGroup.add(label, gbc);
+
+        zone4ValText = new JTextField(5);
+        zone4ValText.setToolTipText(label.getText());
+        zone4ValText.setToolTipText(toolTip);
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 1;
+        gbc.gridy = zoneGridy;
+        gbc.weightx = 100;
+        zoneGroup.add(zone4ValText, gbc);
+
+        toolTip = "Color for zone 4";
+        label = new JLabel("Zone 4 Color:");
+        label.setToolTipText(toolTip);
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 2;
+        gbc.gridy = zoneGridy;
+        zoneGroup.add(label, gbc);
+
+        zone4ColorText = new JTextField(10);
+        zone4ColorText.setToolTipText(label.getText());
+        zone4ColorText.setToolTipText(toolTip);
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 3;
+        gbc.gridy = zoneGridy;
+        gbc.weightx = 100;
+        zoneGroup.add(zone4ColorText, gbc);
+
+        button = new JButton();
+        button.setText("Pick Color");
+        button.setToolTipText("Pick the zone color.");
+        button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent ev) {
+                chooseZoneColor(ev, zone4ColorText);
+            }
+        });
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 4;
+        gbc.gridy = zoneGridy;
+        zoneGroup.add(button, gbc);
+
+        // Zone 5
+        zoneGridy++;
+        toolTip = "Value for zone 5";
+        label = new JLabel("Zone 5 Value:");
+        label.setToolTipText(toolTip);
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 0;
+        gbc.gridy = zoneGridy;
+        zoneGroup.add(label, gbc);
+
+        zone5ValText = new JTextField(5);
+        zone5ValText.setToolTipText(label.getText());
+        zone5ValText.setToolTipText(toolTip);
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 1;
+        gbc.gridy = zoneGridy;
+        gbc.weightx = 100;
+        zoneGroup.add(zone5ValText, gbc);
+
+        toolTip = "Color for zone 5";
+        label = new JLabel("Zone 5 Color:");
+        label.setToolTipText(toolTip);
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 2;
+        gbc.gridy = zoneGridy;
+        zoneGroup.add(label, gbc);
+
+        zone5ColorText = new JTextField(10);
+        zone5ColorText.setToolTipText(label.getText());
+        zone5ColorText.setToolTipText(toolTip);
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 3;
+        gbc.gridy = zoneGridy;
+        gbc.weightx = 100;
+        zoneGroup.add(zone5ColorText, gbc);
+
+        button = new JButton();
+        button.setText("Pick Color");
+        button.setToolTipText("Pick the zone color.");
+        button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent ev) {
+                chooseZoneColor(ev, zone5ColorText);
+            }
+        });
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 4;
+        gbc.gridy = zoneGridy;
+        zoneGroup.add(button, gbc);
+
+        // Zone 6
+        zoneGridy++;
+        toolTip = "Value for zone 6";
+        label = new JLabel("Zone 6 Value:");
+        label.setToolTipText(toolTip);
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 0;
+        gbc.gridy = zoneGridy;
+        zoneGroup.add(label, gbc);
+
+        zone6ValText = new JTextField(5);
+        zone6ValText.setToolTipText(label.getText());
+        zone6ValText.setToolTipText(toolTip);
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 1;
+        gbc.gridy = zoneGridy;
+        gbc.weightx = 100;
+        zoneGroup.add(zone6ValText, gbc);
+
+        toolTip = "Color for zone 6";
+        label = new JLabel("Zone 6 Color:");
+        label.setToolTipText(toolTip);
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 2;
+        gbc.gridy = zoneGridy;
+        zoneGroup.add(label, gbc);
+
+        zone6ColorText = new JTextField(10);
+        zone6ColorText.setToolTipText(label.getText());
+        zone6ColorText.setToolTipText(toolTip);
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 3;
+        gbc.gridy = zoneGridy;
+        gbc.weightx = 100;
+        zoneGroup.add(zone6ColorText, gbc);
+
+        button = new JButton();
+        button.setText("Pick Color");
+        button.setToolTipText("Pick the zone color.");
+        button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent ev) {
+                chooseZoneColor(ev, zone6ColorText);
+            }
+        });
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 4;
+        gbc.gridy = zoneGridy;
+        zoneGroup.add(button, gbc);
+
         // // Dummy Group
         // JPanel dummyGroup = new JPanel();
         // dummyGroup.setBorder(BorderFactory.createCompoundBorder(
@@ -304,7 +630,7 @@ public class PreferencesDialog extends JDialog implements IConstants
         button.setText("Use Current");
         button.setToolTipText("Set to the current viewer values.");
         button.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
+            public void actionPerformed(java.awt.event.ActionEvent ev) {
                 Settings settings = viewer.getSettings();
                 if(settings == null) {
                     Utils.errMsg("Settings in the viewer do not exist");
@@ -319,7 +645,7 @@ public class PreferencesDialog extends JDialog implements IConstants
         button.setText("Use Defaults");
         button.setToolTipText("Set to the STLViewer default values.");
         button.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
+            public void actionPerformed(java.awt.event.ActionEvent ev) {
                 Settings settings = new Settings();
                 if(settings == null) {
                     Utils.errMsg("Default settings do not exist");
@@ -334,7 +660,7 @@ public class PreferencesDialog extends JDialog implements IConstants
         button.setText("Use Stored");
         button.setToolTipText("Reset to the current stored preferences.");
         button.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
+            public void actionPerformed(java.awt.event.ActionEvent ev) {
                 Settings settings = new Settings();
                 settings.loadFromPreferences();
                 if(settings == null) {
@@ -350,7 +676,7 @@ public class PreferencesDialog extends JDialog implements IConstants
         button.setText("Save");
         button.setToolTipText("Save the changes as preferences.");
         button.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
+            public void actionPerformed(java.awt.event.ActionEvent ev) {
                 save();
             }
         });
@@ -360,7 +686,7 @@ public class PreferencesDialog extends JDialog implements IConstants
         button.setText("Set Current");
         button.setToolTipText("Set the current values in the viewer.");
         button.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
+            public void actionPerformed(java.awt.event.ActionEvent ev) {
                 setToViewer();
             }
         });
@@ -370,13 +696,36 @@ public class PreferencesDialog extends JDialog implements IConstants
         button.setText("Cancel");
         button.setToolTipText("Close the dialog and do nothing.");
         button.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
+            public void actionPerformed(java.awt.event.ActionEvent ev) {
                 PreferencesDialog.this.setVisible(false);
             }
         });
         buttonPanel.add(button);
 
         pack();
+    }
+
+    /**
+     * Brings up a JColorChooser to get a new color starting with the color in
+     * the colorText and sets the new color in the colorText unless cancelled.
+     * 
+     * @param ev Not used
+     * @param colorText
+     */
+    void chooseZoneColor(java.awt.event.ActionEvent ev, JTextField colorText) {
+        Color initialColor = Color.BLACK;
+        try {
+            initialColor = Color.decode(colorText.getText());
+        } catch(NumberFormatException ex) {
+            // Do nothing
+        }
+        Color newColor = JColorChooser.showDialog(PreferencesDialog.this,
+            "Choose Zone Color", initialColor);
+        if(newColor != null) {
+            int rgb = newColor.getRGB() & 0x00FFFFFF;
+            String colorString = String.format("0x%06X", rgb);
+            colorText.setText(colorString);
+        }
     }
 
     /**
@@ -448,6 +797,45 @@ public class PreferencesDialog extends JDialog implements IConstants
             eleRavCountText.setText(Integer.toString(settings
                 .getEleRollingAvgCount()));
         }
+
+        if(zone1ValText != null) {
+            zone1ValText.setText(Integer.toString(settings.getZone1Val()));
+        }
+        if(zone2ValText != null) {
+            zone2ValText.setText(Integer.toString(settings.getZone2Val()));
+        }
+        if(zone3ValText != null) {
+            zone3ValText.setText(Integer.toString(settings.getZone3Val()));
+        }
+        if(zone4ValText != null) {
+            zone4ValText.setText(Integer.toString(settings.getZone4Val()));
+        }
+        if(zone5ValText != null) {
+            zone5ValText.setText(Integer.toString(settings.getZone5Val()));
+        }
+        if(zone6ValText != null) {
+            zone6ValText.setText(Integer.toString(settings.getZone6Val()));
+        }
+        
+        if(zone1ColorText != null) {
+            zone1ColorText.setText(settings.getZone1Color());
+        }
+        if(zone2ColorText != null) {
+            zone2ColorText.setText(settings.getZone2Color());
+        }
+        if(zone3ColorText != null) {
+            zone3ColorText.setText(settings.getZone3Color());
+        }
+        if(zone4ColorText != null) {
+            zone4ColorText.setText(settings.getZone4Color());
+        }
+        if(zone5ColorText != null) {
+            zone5ColorText.setText(settings.getZone5Color());
+        }
+        if(zone6ColorText != null) {
+            zone6ColorText.setText(settings.getZone6Color());
+        }
+
     }
 
     /**
@@ -476,6 +864,20 @@ public class PreferencesDialog extends JDialog implements IConstants
                 .parseInt((speedRavCountText.getText())));
             settings.setEleRollingAvgCount(Integer.parseInt((eleRavCountText
                 .getText())));
+            
+            settings.setZone1Val(Integer.parseInt(zone1ValText.getText()));
+            settings.setZone2Val(Integer.parseInt(zone2ValText.getText()));
+            settings.setZone3Val(Integer.parseInt(zone3ValText.getText()));
+            settings.setZone4Val(Integer.parseInt(zone4ValText.getText()));
+            settings.setZone5Val(Integer.parseInt(zone5ValText.getText()));
+            settings.setZone6Val(Integer.parseInt(zone6ValText.getText()));
+            
+            settings.setZone1Color(zone1ColorText.getText());
+            settings.setZone2Color(zone2ColorText.getText());
+            settings.setZone3Color(zone3ColorText.getText());
+            settings.setZone4Color(zone4ColorText.getText());
+            settings.setZone5Color(zone5ColorText.getText());
+            settings.setZone6Color(zone6ColorText.getText());
         } catch(Exception ex) {
             Utils.excMsg("Error reading values", ex);
             return false;
@@ -507,7 +909,7 @@ public class PreferencesDialog extends JDialog implements IConstants
             return;
         }
         if(res) {
-//            Utils.errMsg("Preferences saved successfully");
+            // Utils.errMsg("Preferences saved successfully");
         } else {
             Utils.errMsg("Error saving preferences");
         }
@@ -531,7 +933,7 @@ public class PreferencesDialog extends JDialog implements IConstants
             return;
         }
         if(res) {
-//            Utils.errMsg("Viewer settings set successfully");
+            // Utils.errMsg("Viewer settings set successfully");
         } else {
             Utils.errMsg("Error setting viewer settings");
         }
