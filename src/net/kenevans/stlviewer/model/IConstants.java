@@ -158,7 +158,7 @@ public interface IConstants
     /*** The preference name for zone 1 value. */
     public static final String P_ZONE_1_VAL = "Zone1Value";
     /*** The default value for zone 1 value. */
-    public static final int D_ZONE_1_VAL = 78;
+    public static final int D_ZONE_1_VAL = 79;
     /*** The preference name for the zone 1 color. */
     public static final String P_ZONE_1_COLOR = "Zone1Color";
     /*** The default value for zone 1 color. */
