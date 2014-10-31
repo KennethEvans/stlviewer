@@ -1,7 +1,5 @@
 package net.kenevans.stlviewer.model;
 
-import java.awt.Color;
-
 import net.kenevans.stlviewer.utils.GpxUtils;
 
 /*
@@ -176,7 +174,7 @@ public interface IConstants
     /*** The preference name for zone 1 value. */
     public static final String P_ZONE_3_VAL = "Zone3Value";
     /*** The default value for zone 1 value. */
-    public static final int D_ZONE_3_VAL = 109;
+    public static final int D_ZONE_3_VAL = 110;
     /*** The preference name for the zone 1 color. */
     public static final String P_ZONE_3_COLOR = "Zone3Color";
     /*** The default value for zone 1 color. */
@@ -184,7 +182,7 @@ public interface IConstants
     /*** The preference name for zone 1 value. */
     public static final String P_ZONE_4_VAL = "Zone4Value";
     /*** The default value for zone 1 value. */
-    public static final int D_ZONE_4_VAL = 125;
+    public static final int D_ZONE_4_VAL = 126;
     /*** The preference name for the zone 1 color. */
     public static final String P_ZONE_4_COLOR = "Zone4Color";
     /*** The default value for zone 1 color. */
@@ -205,6 +203,23 @@ public interface IConstants
     public static final String P_ZONE_6_COLOR = "Zone6Color";
     /*** The default value for zone 1 color. */
     public static final String D_ZONE_6_COLOR = "0xFF0000";
+    
+    /*** The preference name for the max HR. */
+    public static final String P_MAX_HR = "MaxHeartRate";
+    /*** The default value for the max HR. */
+    public static final int D_MAX_HR = 157;
+    /*** The preference name for the resting HR. */
+    public static final String P_REST_HR = "RestingHeartRate";
+    /*** The default value for the resting HR. */
+    public static final int D_REST_HR = 60;
+    /*** The preference name for the age. */
+    public static final String P_AGE = "Age";
+    /*** The default value for the resting HR. */
+    public static final int D_AGE = 73;
+    /*** The preference name for using Korvonen. */
+    public static final String P_USE_KORVONEN = "UseKorvonen";
+    /*** The default value for using Korvonen. */
+    public static final boolean D_USE_KORVONEN = false;
 
     /** The prefix used to represent a boundary in the series name. */
     public static final String BOUNDARY_SERIES_NAME_PREFIX = "HR=";

@@ -44,6 +44,11 @@ public class Settings implements IConstants
     private String zone5Color = D_ZONE_5_COLOR;
     private String zone6Color = D_ZONE_6_COLOR;
 
+    private int maxHr = D_MAX_HR;
+    private int restHr = D_REST_HR;
+    private int age = D_AGE;
+    private boolean useKorvonen = D_USE_KORVONEN;
+
     /**
      * Loads the settings from the preferences
      */
@@ -77,6 +82,11 @@ public class Settings implements IConstants
         zone4Color = prefs.get(P_ZONE_4_COLOR, D_ZONE_4_COLOR);
         zone5Color = prefs.get(P_ZONE_5_COLOR, D_ZONE_5_COLOR);
         zone6Color = prefs.get(P_ZONE_6_COLOR, D_ZONE_6_COLOR);
+
+        maxHr = prefs.getInt(P_MAX_HR, D_MAX_HR);
+        restHr = prefs.getInt(P_REST_HR, D_REST_HR);
+        age = prefs.getInt(P_AGE, D_AGE);
+        useKorvonen = prefs.getBoolean(P_USE_KORVONEN, D_USE_KORVONEN);
     }
 
     /**
@@ -103,20 +113,25 @@ public class Settings implements IConstants
             prefs.putInt(P_HR_ROLLING_AVG_COUNT, hrRollingAvgCount);
             prefs.putInt(P_SPEED_ROLLING_AVG_COUNT, speedRollingAvgCount);
             prefs.putInt(P_ELE_ROLLING_AVG_COUNT, eleRollingAvgCount);
-            
+
             prefs.putInt(P_ZONE_1_VAL, zone1Val);
             prefs.putInt(P_ZONE_2_VAL, zone2Val);
             prefs.putInt(P_ZONE_3_VAL, zone3Val);
             prefs.putInt(P_ZONE_4_VAL, zone4Val);
             prefs.putInt(P_ZONE_5_VAL, zone5Val);
             prefs.putInt(P_ZONE_6_VAL, zone6Val);
-            
+
             prefs.put(P_ZONE_1_COLOR, zone1Color);
             prefs.put(P_ZONE_2_COLOR, zone2Color);
             prefs.put(P_ZONE_3_COLOR, zone3Color);
             prefs.put(P_ZONE_4_COLOR, zone4Color);
             prefs.put(P_ZONE_5_COLOR, zone5Color);
             prefs.put(P_ZONE_6_COLOR, zone6Color);
+
+            prefs.putInt(P_MAX_HR, maxHr);
+            prefs.putInt(P_REST_HR, restHr);
+            prefs.putInt(P_AGE, age);
+            prefs.putBoolean(P_USE_KORVONEN, useKorvonen);
         } catch(Exception ex) {
             retVal = false;
             if(showErrors) {
@@ -186,7 +201,7 @@ public class Settings implements IConstants
         this.hrRollingAvgCount = settings.hrRollingAvgCount;
         this.speedRollingAvgCount = settings.speedRollingAvgCount;
         this.eleRollingAvgCount = settings.eleRollingAvgCount;
-        
+
         this.zone1Val = settings.zone1Val;
         this.zone2Val = settings.zone2Val;
         this.zone3Val = settings.zone3Val;
@@ -200,6 +215,11 @@ public class Settings implements IConstants
         this.zone4Color = settings.zone4Color;
         this.zone5Color = settings.zone5Color;
         this.zone6Color = settings.zone6Color;
+
+        this.maxHr = settings.maxHr;
+        this.restHr = settings.restHr;
+        this.age = settings.age;
+        this.useKorvonen = settings.useKorvonen;
     }
 
     /**
@@ -480,6 +500,62 @@ public class Settings implements IConstants
      */
     public void setZone6Color(String zone6Color) {
         this.zone6Color = zone6Color;
+    }
+
+    /**
+     * @return The value of maxHr.
+     */
+    public int getMaxHr() {
+        return maxHr;
+    }
+
+    /**
+     * @param maxHr The new value for maxHr.
+     */
+    public void setMaxHr(int maxHr) {
+        this.maxHr = maxHr;
+    }
+
+    /**
+     * @return The value of restHr.
+     */
+    public int getRestHr() {
+        return restHr;
+    }
+
+    /**
+     * @param restHr The new value for restHr.
+     */
+    public void setRestHr(int restHr) {
+        this.restHr = restHr;
+    }
+
+    /**
+     * @return The value of age.
+     */
+    public int getAge() {
+        return age;
+    }
+
+    /**
+     * @param age The new value for age.
+     */
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    /**
+     * @return The value of useKorvonen.
+     */
+    public boolean getUseKorvonen() {
+        return useKorvonen;
+    }
+
+    /**
+     * @param useKorvonen The new value for useKorvonen.
+     */
+    public void setUseKorvonen(boolean useKorvonen) {
+        this.useKorvonen = useKorvonen;
     }
 
 }

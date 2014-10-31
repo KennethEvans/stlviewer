@@ -29,6 +29,11 @@ import net.kenevans.stlviewer.ui.STLViewer;
  * 
  * @author Kenneth Evans, Jr.
  */
+/**
+ * PreferencesDialog
+ * 
+ * @author Kenneth Evans, Jr.
+ */
 public class PreferencesDialog extends JDialog implements IConstants
 {
     private static final long serialVersionUID = 1L;
@@ -60,6 +65,11 @@ public class PreferencesDialog extends JDialog implements IConstants
     JTextField zone4ColorText;
     JTextField zone5ColorText;
     JTextField zone6ColorText;
+
+    JTextField maxHrText;
+    JTextField restHrText;
+    JTextField ageText;
+    JCheckBox useKorvonenCheck;
 
     /**
      * Constructor
@@ -587,6 +597,98 @@ public class PreferencesDialog extends JDialog implements IConstants
         gbc.gridy = zoneGridy;
         zoneGroup.add(button, gbc);
 
+        // Max HR
+        zoneGridy++;
+        toolTip = "Maximum HR";
+        label = new JLabel("Max HR:");
+        label.setToolTipText(toolTip);
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 0;
+        gbc.gridy = zoneGridy;
+        zoneGroup.add(label, gbc);
+
+        maxHrText = new JTextField(5);
+        maxHrText.setToolTipText(label.getText());
+        maxHrText.setToolTipText(toolTip);
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 1;
+        gbc.gridy = zoneGridy;
+        gbc.weightx = 100;
+        zoneGroup.add(maxHrText, gbc);
+
+        toolTip = "Age";
+        label = new JLabel("Age:");
+        label.setToolTipText(toolTip);
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 2;
+        gbc.gridy = zoneGridy;
+        zoneGroup.add(label, gbc);
+
+        ageText = new JTextField(5);
+        ageText.setToolTipText(label.getText());
+        ageText.setToolTipText(toolTip);
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 3;
+        gbc.gridy = zoneGridy;
+        gbc.weightx = 100;
+        zoneGroup.add(ageText, gbc);
+
+        button = new JButton();
+        button.setText("Calculate Max HR");
+        button.setToolTipText("Calculate the max HR for this age.");
+        button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent ev) {
+                calculateMaxHr();
+            }
+        });
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 4;
+        gbc.gridy = zoneGridy;
+        zoneGroup.add(button, gbc);
+
+        // Rest HR
+        zoneGridy++;
+        toolTip = "Resting HR";
+        label = new JLabel("Resting HR:");
+        label.setToolTipText(toolTip);
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 0;
+        gbc.gridy = zoneGridy;
+        zoneGroup.add(label, gbc);
+
+        restHrText = new JTextField(5);
+        restHrText.setToolTipText(label.getText());
+        restHrText.setToolTipText(toolTip);
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 1;
+        gbc.gridy = zoneGridy;
+        gbc.weightx = 100;
+        zoneGroup.add(restHrText, gbc);
+
+        // Use Korvonen
+        useKorvonenCheck = new JCheckBox("Use Korvonen");
+        useKorvonenCheck.setToolTipText("Whether to use the Korvonen formula.");
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 0;
+        hrGroup.add(useKorvonenCheck, gbc);
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 2;
+        gbc.gridy = zoneGridy;
+        zoneGroup.add(useKorvonenCheck, gbc);
+
+        button = new JButton();
+        button.setText("Calculate Zone Values");
+        button.setToolTipText("Calculate the zone values for this age.");
+        button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent ev) {
+                calculateZoneValues();
+            }
+        });
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 4;
+        gbc.gridy = zoneGridy;
+        zoneGroup.add(button, gbc);
+
         // // Dummy Group
         // JPanel dummyGroup = new JPanel();
         // dummyGroup.setBorder(BorderFactory.createCompoundBorder(
@@ -717,7 +819,8 @@ public class PreferencesDialog extends JDialog implements IConstants
         try {
             initialColor = Color.decode(colorText.getText());
         } catch(NumberFormatException ex) {
-            // Do nothing
+            Utils.excMsg("Cannot parse color", ex);
+            return;
         }
         Color newColor = JColorChooser.showDialog(PreferencesDialog.this,
             "Choose Zone Color", initialColor);
@@ -725,6 +828,54 @@ public class PreferencesDialog extends JDialog implements IConstants
             int rgb = newColor.getRGB() & 0x00FFFFFF;
             String colorString = String.format("0x%06X", rgb);
             colorText.setText(colorString);
+        }
+    }
+
+    /**
+     * Calculates the max HR from the age using teh formula by Tanaka, Monahan,
+     * & Seals and sets the max HR.
+     */
+    void calculateMaxHr() {
+        int maxHr = 0, age = 0;
+        try {
+            age = Integer.parseInt(ageText.getText());
+            // Tanaka, Monahan, & Seals
+            maxHr = (int)Math.round(208 - .7 * age);
+            maxHrText.setText(Integer.toString(maxHr));
+        } catch(NumberFormatException ex) {
+            Utils.excMsg("Invalid age", ex);
+            return;
+        }
+    }
+
+    void calculateZoneValues() {
+        int maxHr = 0, restHr = 0;
+        boolean useKorvonen = false;
+        int[] zoneVals = new int[6];
+        try {
+            maxHr = Integer.parseInt(maxHrText.getText());
+            restHr = Integer.parseInt(restHrText.getText());
+            useKorvonen = useKorvonenCheck.isSelected();
+            // Tanaka, Monahan, & Seals
+            double intensity;
+            for(int i = 0; i < 6; i++) {
+                intensity = .1 * i + .5;
+                if(useKorvonen) {
+                    zoneVals[i] = (int)Math.round(intensity * (maxHr - restHr)
+                        + restHr);
+                } else {
+                    zoneVals[i] = (int)Math.round(intensity * maxHr);
+                }
+            }
+            zone1ValText.setText(Integer.toString(zoneVals[0]));
+            zone2ValText.setText(Integer.toString(zoneVals[1]));
+            zone3ValText.setText(Integer.toString(zoneVals[2]));
+            zone4ValText.setText(Integer.toString(zoneVals[3]));
+            zone5ValText.setText(Integer.toString(zoneVals[4]));
+            zone6ValText.setText(Integer.toString(zoneVals[5]));
+        } catch(NumberFormatException ex) {
+            Utils.excMsg("Invalid value for max Hr or resting HR", ex);
+            return;
         }
     }
 
@@ -816,7 +967,7 @@ public class PreferencesDialog extends JDialog implements IConstants
         if(zone6ValText != null) {
             zone6ValText.setText(Integer.toString(settings.getZone6Val()));
         }
-        
+
         if(zone1ColorText != null) {
             zone1ColorText.setText(settings.getZone1Color());
         }
@@ -836,6 +987,18 @@ public class PreferencesDialog extends JDialog implements IConstants
             zone6ColorText.setText(settings.getZone6Color());
         }
 
+        if(ageText != null) {
+            ageText.setText(Integer.toString(settings.getAge()));
+        }
+        if(maxHrText != null) {
+            maxHrText.setText(Integer.toString(settings.getMaxHr()));
+        }
+        if(restHrText != null) {
+            restHrText.setText(Integer.toString(settings.getRestHr()));
+        }
+        if(useKorvonenCheck != null) {
+            useKorvonenCheck.setSelected(settings.getUseKorvonen());
+        }
     }
 
     /**
@@ -864,20 +1027,25 @@ public class PreferencesDialog extends JDialog implements IConstants
                 .parseInt((speedRavCountText.getText())));
             settings.setEleRollingAvgCount(Integer.parseInt((eleRavCountText
                 .getText())));
-            
+
             settings.setZone1Val(Integer.parseInt(zone1ValText.getText()));
             settings.setZone2Val(Integer.parseInt(zone2ValText.getText()));
             settings.setZone3Val(Integer.parseInt(zone3ValText.getText()));
             settings.setZone4Val(Integer.parseInt(zone4ValText.getText()));
             settings.setZone5Val(Integer.parseInt(zone5ValText.getText()));
             settings.setZone6Val(Integer.parseInt(zone6ValText.getText()));
-            
+
             settings.setZone1Color(zone1ColorText.getText());
             settings.setZone2Color(zone2ColorText.getText());
             settings.setZone3Color(zone3ColorText.getText());
             settings.setZone4Color(zone4ColorText.getText());
             settings.setZone5Color(zone5ColorText.getText());
             settings.setZone6Color(zone6ColorText.getText());
+
+            settings.setAge(Integer.parseInt(ageText.getText()));
+            settings.setMaxHr(Integer.parseInt(maxHrText.getText()));
+            settings.setRestHr(Integer.parseInt(restHrText.getText()));
+            settings.setUseKorvonen(useKorvonenCheck.isSelected());
         } catch(Exception ex) {
             Utils.excMsg("Error reading values", ex);
             return false;
