@@ -43,20 +43,20 @@ public class STLFileModel implements IConstants
 {
     private String fileName;
     private GpxType gpx;
-    long[] hrTimeVals;
-    double[] hrVals;
-    long[] speedTimeVals;
-    double[] speedVals;
-    long[] timeVals;
-    double[] eleVals;
-    int nTracks;
-    int nSegments;
-    int nTrackPoints;
-    int nHrValues;
-    long startTime = Long.MAX_VALUE;
-    long endTime;
-    long startHrTime = Long.MAX_VALUE;
-    long endHrTime;
+    private long[] hrTimeVals;
+    private double[] hrVals;
+    private long[] speedTimeVals;
+    private double[] speedVals;
+    private long[] timeVals;
+    private double[] eleVals;
+    private int nTracks;
+    private int nSegments;
+    private int nTrackPoints;
+    private int nHrValues;
+    private long startTime = Long.MAX_VALUE;
+    private long endTime;
+    private long startHrTime = Long.MAX_VALUE;
+    private long endHrTime;
 
     SimpleDateFormat oruxMapsBpmFormatter;
 
@@ -85,9 +85,9 @@ public class STLFileModel implements IConstants
         boolean res;
         XMLGregorianCalendar xgcal;
         GregorianCalendar gcal;
-        
-        oruxMapsBpmFormatter = new SimpleDateFormat(
-            "yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
+
+        oruxMapsBpmFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'",
+            Locale.US);
         oruxMapsBpmFormatter.setTimeZone(TimeZone.getTimeZone("GMT"));
 
         // Get the tracks
@@ -298,7 +298,7 @@ public class STLFileModel implements IConstants
         if(bpm == null || bpm.length() == 0) {
             return false;
         }
-        
+
         String[] tokens = bpm.split("\n");
         String[] vals;
         long time;
@@ -315,7 +315,7 @@ public class STLFileModel implements IConstants
             }
             // Time
             try {
-                time=oruxMapsBpmFormatter.parse(vals[1]).getTime();
+                time = oruxMapsBpmFormatter.parse(vals[1]).getTime();
             } catch(Exception ex) {
                 res = false;
                 continue;

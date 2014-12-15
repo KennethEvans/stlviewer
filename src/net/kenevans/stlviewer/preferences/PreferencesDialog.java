@@ -184,13 +184,6 @@ public class PreferencesDialog extends JDialog implements IConstants
         gbc.gridx = 0;
         hrGroup.add(hrVisibileCheck, gbc);
 
-        // Zones visible
-        hrZonesVisibileCheck = new JCheckBox("Zones Visible");
-        hrZonesVisibileCheck.setToolTipText("Whether HR zones are visible.");
-        gbc = (GridBagConstraints)gbcDefault.clone();
-        gbc.gridx = 0;
-        hrGroup.add(hrZonesVisibileCheck, gbc);
-
         // Running average
         String toolTip = "Number of data points to average over.  "
             + "0->Don't average.  " + "Negative->Omit raw values.";
@@ -209,6 +202,13 @@ public class PreferencesDialog extends JDialog implements IConstants
         gbc.weightx = 100;
         hrGroup.add(hrRavCountText, gbc);
 
+        // Zones visible
+        hrZonesVisibileCheck = new JCheckBox("Zones Visible");
+        hrZonesVisibileCheck.setToolTipText("Whether HR zones are visible.");
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 3;
+        hrGroup.add(hrZonesVisibileCheck, gbc);
+
         // Speed Group //////////////////////////////////////////////////////
         JPanel speedGroup = new JPanel();
         speedGroup.setBorder(BorderFactory.createCompoundBorder(
@@ -225,7 +225,7 @@ public class PreferencesDialog extends JDialog implements IConstants
 
         // Visible
         speedVisibileCheck = new JCheckBox("Visible");
-        speedVisibileCheck.setToolTipText("Whether HR data is visible.");
+        speedVisibileCheck.setToolTipText("Whether speed data is visible.");
         gbc = (GridBagConstraints)gbcDefault.clone();
         gbc.gridx = 0;
         speedGroup.add(speedVisibileCheck, gbc);
@@ -264,7 +264,7 @@ public class PreferencesDialog extends JDialog implements IConstants
 
         // Visible
         eleVisibileCheck = new JCheckBox("Visible");
-        eleVisibileCheck.setToolTipText("Whether HR data is visible.");
+        eleVisibileCheck.setToolTipText("Whether elevation data is visible.");
         gbc = (GridBagConstraints)gbcDefault.clone();
         gbc.gridx = 0;
         eleGroup.add(eleVisibileCheck, gbc);

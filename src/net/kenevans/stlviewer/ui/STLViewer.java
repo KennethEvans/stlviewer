@@ -51,7 +51,7 @@ import net.kenevans.stlviewer.preferences.Settings;
 import org.jfree.ui.RefineryUtilities;
 
 /**
- * STLViewer2 is a viewer to view ECG fileNames from the MD100A ECG Monitor.
+ * STLViewer is a viewer to view ECG fileNames from the MD100A ECG Monitor.
  * 
  * @author Kenneth Evans, Jr.
  */
