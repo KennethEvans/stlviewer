@@ -66,7 +66,7 @@ public interface IConstants
     /*** The preference name for the HR color. */
     public static final String P_HR_COLOR = "hrColor";
     /*** The default value for the HR color. */
-    public static final String D_HR_COLOR = "0x000000";
+    public static final String D_HR_COLOR = "0xC00000";
     /*** The preference name for the HR visibility. */
     public static final String P_HR_VISIBILITY = "hrVisibility";
     /*** The default value for the HR visibility. */
