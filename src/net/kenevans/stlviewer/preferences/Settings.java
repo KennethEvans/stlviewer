@@ -20,6 +20,7 @@ import net.kenevans.stlviewer.ui.STLViewer;
 public class Settings implements IConstants
 {
     private String defaultDirectory = D_DEFAULT_DIR;
+    private String database = D_DB;
 
     private boolean hrVisible = D_HR_VISIBILITY;
     private boolean hrZonesVisible = D_HR_ZONES_VISIBILITY;
@@ -55,6 +56,7 @@ public class Settings implements IConstants
     public void loadFromPreferences() {
         Preferences prefs = STLViewer.getUserPreferences();
         defaultDirectory = prefs.get(P_DEFAULT_DIR, D_DEFAULT_DIR);
+        database = prefs.get(P_DB, D_DB);
 
         hrVisible = prefs.getBoolean(P_HR_VISIBILITY, D_HR_VISIBILITY);
         hrZonesVisible = prefs.getBoolean(P_HR_ZONES_VISIBILITY,
@@ -104,6 +106,7 @@ public class Settings implements IConstants
             Preferences prefs = STLViewer.getUserPreferences();
 
             prefs.put(P_DEFAULT_DIR, defaultDirectory);
+            prefs.put(P_DB, database);
 
             prefs.putBoolean(P_HR_VISIBILITY, hrVisible);
             prefs.putBoolean(P_HR_ZONES_VISIBILITY, hrZonesVisible);
@@ -176,8 +179,30 @@ public class Settings implements IConstants
                                 .errMsg("The default directory is not a directory");
                         }
                         retVal = false;
-
                     }
+                }
+            }
+        }
+        
+        // Database
+        if(database == null) {
+            if(showErrors) {
+                Utils.errMsg("Value for the database is null");
+            }
+            retVal = false;
+        } else {
+            File file = new File(database);
+            if(file == null) {
+                if(showErrors) {
+                    Utils.errMsg("The database is invalid");
+                }
+                retVal = false;
+            } else {
+                if(!file.exists()) {
+                    if(showErrors) {
+                        Utils.errMsg("The database does not exist");
+                    }
+                    retVal = false;
                 }
             }
         }
@@ -192,6 +217,7 @@ public class Settings implements IConstants
      */
     public void copyFrom(Settings settings) {
         this.defaultDirectory = settings.defaultDirectory;
+        this.database = settings.database;
 
         this.hrVisible = settings.hrVisible;
         this.hrZonesVisible = settings.hrZonesVisible;
@@ -234,6 +260,20 @@ public class Settings implements IConstants
      */
     public void setDefaultDirectory(String defaultDirectory) {
         this.defaultDirectory = defaultDirectory;
+    }
+
+    /**
+     * @return The value of database.
+     */
+    public String getDatabase() {
+        return database;
+    }
+
+    /**
+     * @param database The new value for database.
+     */
+    public void setDatabase(String database) {
+        this.database = database;
     }
 
     /**

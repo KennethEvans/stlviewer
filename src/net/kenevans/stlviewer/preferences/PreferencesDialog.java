@@ -44,6 +44,7 @@ public class PreferencesDialog extends JDialog implements IConstants
     private boolean ok = true;
 
     JTextField defaultDirText;
+    JTextField dbText;
     JCheckBox hrVisibileCheck;
     JCheckBox hrZonesVisibileCheck;
     JCheckBox speedVisibileCheck;
@@ -127,7 +128,7 @@ public class PreferencesDialog extends JDialog implements IConstants
         gbc.gridx = 0;
         gbc.gridy = gridy;
         fileGroup.add(label, gbc);
-
+        
         // File JPanel holds the filename and browse button
         JPanel filePanel = new JPanel();
         filePanel.setLayout(new GridBagLayout());
@@ -157,6 +158,50 @@ public class PreferencesDialog extends JDialog implements IConstants
                 String initialDirName = defaultDirText.getText();
                 String dirName = browse(initialDirName);
                 defaultDirText.setText(dirName);
+            }
+        });
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 1;
+        filePanel.add(button);
+        
+        // Default database
+        gridy++;
+        label = new JLabel("Database:");
+        label.setToolTipText("The default database.");
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 0;
+        gbc.gridy = gridy;
+        fileGroup.add(label, gbc);
+
+        // Database JPanel holds the filename and browse button
+        filePanel = new JPanel();
+        filePanel.setLayout(new GridBagLayout());
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 1;
+        gbc.gridy = gridy;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 100;
+        fileGroup.add(filePanel, gbc);
+
+        dbText = new JTextField(30);
+        dbText.setToolTipText(label.getText());
+        gbc = (GridBagConstraints)gbcDefault.clone();
+        gbc.gridx = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 100;
+        filePanel.add(dbText, gbc);
+
+        button = new JButton();
+        button.setText("Browse");
+        button.setToolTipText("Choose the database.");
+        button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent ev) {
+                if(dbText == null) {
+                    return;
+                }
+                String initialDirName = dbText.getText();
+                String dirName = browse(initialDirName);
+                dbText.setText(dirName);
             }
         });
         gbc = (GridBagConstraints)gbcDefault.clone();
@@ -922,6 +967,9 @@ public class PreferencesDialog extends JDialog implements IConstants
         if(defaultDirText != null) {
             defaultDirText.setText(settings.getDefaultDirectory());
         }
+        if(dbText != null) {
+            dbText.setText(settings.getDatabase());
+        }
 
         if(hrVisibileCheck != null) {
             hrVisibileCheck.setSelected(settings.getHrVisible());
@@ -1015,6 +1063,7 @@ public class PreferencesDialog extends JDialog implements IConstants
         }
         try {
             settings.setDefaultDirectory(defaultDirText.getText());
+            settings.setDatabase(dbText.getText());
 
             settings.setHrVisible(hrVisibileCheck.isSelected());
             settings.setHrZonesVisible(hrZonesVisibileCheck.isSelected());

@@ -8,8 +8,8 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileFilter;
 import java.net.URL;
+import java.sql.Connection;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -43,6 +43,7 @@ import javax.swing.event.ListSelectionListener;
 import net.kenevans.core.utils.AboutBoxPanel;
 import net.kenevans.core.utils.ImageUtils;
 import net.kenevans.core.utils.Utils;
+import net.kenevans.stlviewer.database.STLDatabase;
 import net.kenevans.stlviewer.model.IConstants;
 import net.kenevans.stlviewer.model.STLFileModel;
 import net.kenevans.stlviewer.preferences.PreferencesDialog;
@@ -122,7 +123,7 @@ public class STLViewer extends JFrame implements IConstants
             Utils.errMsg("Not a directory: " + dirName);
             return;
         }
-        File[] files = dir.listFiles(new FileFilter() {
+        File[] files = dir.listFiles(new java.io.FileFilter() {
             public boolean accept(File file) {
                 if(file.isDirectory()) {
                     return false;
@@ -298,6 +299,27 @@ public class STLViewer extends JFrame implements IConstants
         menuBar.add(menu);
 
         menuItem = new JMenuItem();
+        menuItem.setText("Create/Recreate Database");
+        menuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                createDatabase();
+            }
+        });
+        menu.add(menuItem);
+
+        menuItem = new JMenuItem();
+        menuItem.setText("Add CSV file to Database...");
+        menuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                addCsvFileToDatabase();
+            }
+        });
+        menu.add(menuItem);
+
+        separator = new JSeparator();
+        menu.add(separator);
+
+        menuItem = new JMenuItem();
         menuItem.setText("File Info...");
         menuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
@@ -305,6 +327,9 @@ public class STLViewer extends JFrame implements IConstants
             }
         });
         menu.add(menuItem);
+
+        separator = new JSeparator();
+        menu.add(separator);
 
         menuItem = new JMenuItem();
         menuItem.setText("Preferences...");
@@ -342,7 +367,8 @@ public class STLViewer extends JFrame implements IConstants
             // JFrame.setDefaultLookAndFeelDecorated(true);
             // UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             this.setTitle(TITLE);
-            // USE EXIT_ON_CLOSE not DISPOSE_ON_CLOSE to close any modeless dialogs
+            // USE EXIT_ON_CLOSE not DISPOSE_ON_CLOSE to close any modeless
+            // dialogs
             this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             // frame.setLocationRelativeTo(null);
 
@@ -493,6 +519,50 @@ public class STLViewer extends JFrame implements IConstants
     }
 
     /**
+     * Creates or recreates an empty data base.
+     */
+    public void createDatabase() {
+        Connection conn = STLDatabase.createDatabase(DATABASE_URL_PREFIX
+            + settings.getDatabase());
+        if(conn != null) {
+            STLDatabase.closeConnection(conn);
+            Utils.infoMsg("Empty database created");
+        }
+    }
+
+    /**
+     * Adds a CSV file to the database
+     */
+    public void addCsvFileToDatabase() {
+        // First select the file
+        JFileChooser chooser = new JFileChooser();
+        if(defaultOpenPath != null) {
+            chooser.setCurrentDirectory(new File(defaultOpenPath));
+        }
+        chooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
+            public boolean accept(File file) {
+                return file.isDirectory() || file.getName().endsWith(".csv");
+            }
+
+            public String getDescription() {
+                return "Comma Separated Values (CSV)";
+            }
+        });
+        int result = chooser.showOpenDialog(this);
+        if(result == JFileChooser.APPROVE_OPTION) {
+            // Save the selected path for next time
+            defaultOpenPath = chooser.getSelectedFile().getParentFile()
+                .getPath();
+            // Process the file
+            File file = chooser.getSelectedFile();
+            Connection conn = STLDatabase.getConnection(DATABASE_URL_PREFIX
+                + settings.getDatabase());
+            STLDatabase.addToDatabase(conn, file);
+            STLDatabase.closeConnection(conn);
+        }
+    }
+
+    /**
      * Shows model information.
      */
     private void showInfo() {
@@ -598,8 +668,33 @@ public class STLViewer extends JFrame implements IConstants
         if(model != null) {
             info += model.getInfo() + LS;
         }
+        info += getDataBaseInfo(model.getFileName());
         infoTextArea.setText(info);
         infoTextArea.setCaretPosition(0);
+    }
+
+    /**
+     * Gets info for the row in the database.
+     * 
+     * @param fileName The filename, which should contain the id for the
+     *            database row.
+     * @return
+     */
+    public String getDataBaseInfo(String fileName) {
+        String info = "";
+        if(fileName == null) {
+            return info;
+        }
+        int start = fileName.lastIndexOf('-');
+        int end = fileName.lastIndexOf('.');
+        if(start == -1 || end == -1 || end <= start) {
+            // No id found
+            return info;
+        }
+        String id = fileName.substring(start + 1, end);
+        String url = DATABASE_URL_PREFIX + settings.getDatabase();
+        info += STLDatabase.getInfoForId(id, url);
+        return info;
     }
 
     /**

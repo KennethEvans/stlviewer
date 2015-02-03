@@ -52,6 +52,11 @@ public interface IConstants
     public static final String P_DEFAULT_DIR = "defaultDir";
     /*** The default value for the default directory for finding GPX files. */
     public static final String D_DEFAULT_DIR = "C:/Users/evans/Documents/GPSLink/STL";
+    
+    /*** The preference name for the STL database. */
+    public static final String P_DB = "defaultDB";
+    /*** The default value for the default database. */
+    public static final String D_DB = "C:/Users/evans/Documents/GPSLink/STL/STLDatabase.db";
 
     /** The number of data types. */
     public static int N_DATA_TYPES = 1;
@@ -153,7 +158,7 @@ public interface IConstants
     public static final String P_ELE_ROLLING_AVG_COUNT = "elevationRollingAvgCount";
     /*** The default value for the elevation rolling average count. */
     public static final int D_ELE_ROLLING_AVG_COUNT = 5;
-    
+
     // Zones
     /*** The preference name for zone 1 value. */
     public static final String P_ZONE_1_VAL = "Zone1Value";
@@ -203,7 +208,7 @@ public interface IConstants
     public static final String P_ZONE_6_COLOR = "Zone6Color";
     /*** The default value for zone 1 color. */
     public static final String D_ZONE_6_COLOR = "0xFF0000";
-    
+
     /*** The preference name for the max HR. */
     public static final String P_MAX_HR = "MaxHeartRate";
     /*** The default value for the max HR. */
@@ -225,5 +230,40 @@ public interface IConstants
     public static final String BOUNDARY_SERIES_NAME_PREFIX = "HR=";
 
     public static final String FILE_PATH = D_DEFAULT_DIR + "/" + FILE_NAME;
+
+    // Database
+    public static final String DRIVER_CLASS = "org.sqlite.JDBC";
+    public static final String DATABASE_NAME = "STLDatabase.db";
+    public static final String DATA_TABLE_NAME = "data";
+    public static final String DATABASE_PATH = D_DEFAULT_DIR + "/"
+        + DATABASE_NAME;
+    public static final String DATABASE_URL_PREFIX = "jdbc:sqlite:";
+    public static final String DATABASE_URL = DATABASE_URL_PREFIX + DATABASE_PATH;
+    public static final String CREATE_DATA_TABLE_STMT = "CREATE TABLE "
+        + DATA_TABLE_NAME + " (" + "id text not null,"
+        + "category text not null," + "event text not null,"
+        + "location text not null," + "tags text not null,"
+        + "year text not null," + "month text not null,"
+        + "week_of_year text not null," + "start text not null,"
+        + "finish text not null," + "distance text not null,"
+        + "duration text not null," + "duration_sec text not null,"
+        + "calories text not null," + "ave_speed text not null,"
+        + "ave_pace text not null," + "ave_pace_sec text not null,"
+        + "ave_moving_speed text not null," + "ave_moving_pace text not null,"
+        + "ave_moving_pace_sec text not null," + "max_speed text not null,"
+        + "ave_heart_rate text not null," + "elevation_gain text not null,"
+        + "elevation_loss text not null," + "max_elevation text not null" + ")";
+    String[] COLS = {"rowid", "id", "category", "event", "location", "tags",
+        "year", "month", "week_of_year", "start", "finish", "distance",
+        "duration", "duration_sec", "calories", "ave_speed", "ave_pace",
+        "ave_pace_sec", "ave_moving_speed", "ave_moving_pace",
+        "ave_moving_pace_sec", "max_speed", "ave_heart_rate", "elevation_gain",
+        "elevation_loss", "max_elevation",};
+    String[] CSV_COLS = {"id", "category", "event", "location", "tags", "year",
+        "month", "week of year", "start", "finish", "distance", "duration",
+        "duration (s)", "calories", "ave speed", "ave pace", "ave pace (s)",
+        "ave moving speed", "ave moving pace", "ave moving pace (s)",
+        "max speed", "ave heart rate", "elevation gain", "elevation loss",
+        "max elevation",};
 
 }
