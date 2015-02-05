@@ -116,11 +116,11 @@ public interface IConstants
     /*** The preference name for the Speed color. */
     public static final String P_SPEED_COLOR = "speedColor";
     /*** The default value for the Speed color. */
-    public static final String D_SPEED_COLOR = "0x3CCFF";
+    public static final String D_SPEED_COLOR = "0x2288FF";
     /*** The preference name for the Speed visibility. */
     public static final String P_SPEED_VISIBILITY = "speedVisibility";
     /*** The default value for the Speed visibility. */
-    public static final boolean D_SPEED_VISIBILITY = true;
+    public static final boolean D_SPEED_VISIBILITY = false;
     /*** The preference name for the Speed range axis. */
     public static final String P_SPEED_RANGE_AXIS = "speedRangeAxis";
     /*** The default value for the Speed range axis. */
@@ -167,7 +167,7 @@ public interface IConstants
     /*** The preference name for the zone 1 color. */
     public static final String P_ZONE_1_COLOR = "Zone1Color";
     /*** The default value for zone 1 color. */
-    public static final String D_ZONE_1_COLOR = "0x0099FF";
+    public static final String D_ZONE_1_COLOR = "0x99CCFF";
     /*** The preference name for zone 1 value. */
     public static final String P_ZONE_2_VAL = "Zone2Value";
     /*** The default value for zone 1 value. */
@@ -175,7 +175,7 @@ public interface IConstants
     /*** The preference name for the zone 1 color. */
     public static final String P_ZONE_2_COLOR = "Zone2Color";
     /*** The default value for zone 1 color. */
-    public static final String D_ZONE_2_COLOR = "0x00FF00";
+    public static final String D_ZONE_2_COLOR = "0x66FF00";
     /*** The preference name for zone 1 value. */
     public static final String P_ZONE_3_VAL = "Zone3Value";
     /*** The default value for zone 1 value. */
