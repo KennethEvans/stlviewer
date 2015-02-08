@@ -280,6 +280,16 @@ public class STLViewer extends JFrame implements IConstants
         });
         menu.add(menuItem);
 
+        // Refresh
+        menuItem = new JMenuItem();
+        menuItem.setText("Refresh");
+        menuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                refresh();
+            }
+        });
+        menu.add(menuItem);
+
         JSeparator separator = new JSeparator();
         menu.add(separator);
 
@@ -441,6 +451,13 @@ public class STLViewer extends JFrame implements IConstants
             settings.setDefaultDirectory(dirName);
             findFileNames(settings.getDefaultDirectory());
         }
+    }
+
+    /**
+     * Refreshes the loaded directory.
+     */
+    private void refresh() {
+        findFileNames(settings.getDefaultDirectory());
     }
 
     /**
