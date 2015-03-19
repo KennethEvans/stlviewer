@@ -23,7 +23,7 @@ import net.kenevans.gpxcombined.TrackPointExtensionT;
 import net.kenevans.gpxcombined.TrkType;
 import net.kenevans.gpxcombined.TrksegType;
 import net.kenevans.gpxcombined.WptType;
-import net.kenevans.parser.GPXParser;
+import net.kenevans.gpxcombined.parser.GPXParser;
 import net.kenevans.stlviewer.utils.GpxUtils;
 
 import org.w3c.dom.Node;
