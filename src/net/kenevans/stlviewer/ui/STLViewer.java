@@ -219,8 +219,8 @@ public class STLViewer extends JFrame implements IConstants
         infoTextArea = new JTextArea();
         infoTextArea.setEditable(false);
         infoTextArea.setColumns(40);
-        JScrollPane beatScrollPane = new JScrollPane(infoTextArea);
-        infoPanel.add(beatScrollPane, BorderLayout.CENTER);
+        JScrollPane infoScrollPane = new JScrollPane(infoTextArea);
+        infoPanel.add(infoScrollPane, BorderLayout.CENTER);
 
         // Lower split pane
         JSplitPane lowerPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
