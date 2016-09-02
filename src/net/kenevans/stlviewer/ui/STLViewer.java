@@ -83,8 +83,8 @@ public class STLViewer extends JFrame implements IConstants
     private Container contentPane = this.getContentPane();
     private JPanel listPanel = new JPanel();
     private JPanel lowerPanel = new JPanel();
-    private DefaultListModel listModel = new DefaultListModel();
-    private JList list = new JList(listModel);
+    private DefaultListModel<String> listModel = new DefaultListModel<String>();
+    private JList<String> list = new JList<String>(listModel);
     private JScrollPane listScrollPane;
     private JTextArea infoTextArea;
     private JPanel displayPanel = new JPanel();
@@ -200,7 +200,7 @@ public class STLViewer extends JFrame implements IConstants
         list.setCellRenderer(new DefaultListCellRenderer() {
             private static final long serialVersionUID = 1L;
 
-            public Component getListCellRendererComponent(JList list,
+            public Component getListCellRendererComponent(JList<?> list,
                 Object value, int index, boolean isSelected,
                 boolean cellHasFocus) {
                 JLabel label = (JLabel)super.getListCellRendererComponent(list,
@@ -359,9 +359,10 @@ public class STLViewer extends JFrame implements IConstants
         menuItem.setText("About");
         menuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                JOptionPane.showMessageDialog(null, new AboutBoxPanel(TITLE
-                    + " " + VERSION, "Written by Kenneth Evans, Jr.",
-                    "kenevans.net", "Copyright (c) 2014 Kenneth Evans"),
+                JOptionPane.showMessageDialog(null,
+                    new AboutBoxPanel(TITLE + " " + VERSION,
+                        "Written by Kenneth Evans, Jr.", "kenevans.net",
+                        "Copyright (c) 2014 Kenneth Evans"),
                     "About", JOptionPane.PLAIN_MESSAGE);
             }
         });
@@ -539,8 +540,8 @@ public class STLViewer extends JFrame implements IConstants
      * Creates or recreates an empty data base.
      */
     public void createDatabase() {
-        Connection conn = STLDatabase.createDatabase(DATABASE_URL_PREFIX
-            + settings.getDatabase());
+        Connection conn = STLDatabase
+            .createDatabase(DATABASE_URL_PREFIX + settings.getDatabase());
         if(conn != null) {
             STLDatabase.closeConnection(conn);
             Utils.infoMsg("Empty database created");
@@ -572,8 +573,8 @@ public class STLViewer extends JFrame implements IConstants
                 .getPath();
             // Process the file
             File file = chooser.getSelectedFile();
-            Connection conn = STLDatabase.getConnection(DATABASE_URL_PREFIX
-                + settings.getDatabase());
+            Connection conn = STLDatabase
+                .getConnection(DATABASE_URL_PREFIX + settings.getDatabase());
             STLDatabase.addToDatabase(conn, file);
             STLDatabase.closeConnection(conn);
         }
