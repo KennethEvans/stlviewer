@@ -29,7 +29,7 @@ public interface IConstants
     /** The title for the viewer. */
     public static final String TITLE = "STL Viewer";
     /** The version */
-    public static final String VERSION = "1.0.0.0";
+    public static final String VERSION = "1.1.0.0";
     /** The title for the plot. */
     public static final String PLOT_TITLE = "STL Data";
     /** The frame width for the viewer. */

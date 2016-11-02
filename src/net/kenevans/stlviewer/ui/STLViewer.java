@@ -76,8 +76,8 @@ public class STLViewer extends JFrame implements IConstants
     /** The model for this user interface. */
     private STLFileModel model;
 
-    /** The plot for this user interface. */
-    private STLPlot plot;
+    /** The stlPlot for this user interface. */
+    private STLPlot stlPlot;
 
     // User interface controls (Many do not need to be global)
     private Container contentPane = this.getContentPane();
@@ -103,7 +103,7 @@ public class STLViewer extends JFrame implements IConstants
      */
     public STLViewer() {
         loadUserPreferences();
-        plot = new STLPlot(this);
+        stlPlot = new STLPlot(this);
         uiInit();
         findFileNames(settings.getDefaultDirectory());
     }
@@ -173,18 +173,18 @@ public class STLViewer extends JFrame implements IConstants
 
         // Chart panel
         displayPanel.setLayout(new BorderLayout());
-        plot.createChart();
+        stlPlot.createChart();
         // Not necessary to set this, it will adjust per the divider location
         // and frame size
-        // plot.getChartPanel().setPreferredSize(
+        // stlPlot.getChartPanel().setPreferredSize(
         // new Dimension(CHART_WIDTH, CHART_HEIGHT));
-        plot.getChartPanel().setDomainZoomable(true);
-        plot.getChartPanel().setRangeZoomable(true);
+        stlPlot.getChartPanel().setDomainZoomable(true);
+        stlPlot.getChartPanel().setRangeZoomable(true);
         javax.swing.border.CompoundBorder compoundborder = BorderFactory
             .createCompoundBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4),
                 BorderFactory.createEtchedBorder());
-        plot.getChartPanel().setBorder(compoundborder);
-        displayPanel.add(plot.getChartPanel());
+        stlPlot.getChartPanel().setBorder(compoundborder);
+        displayPanel.add(stlPlot.getChartPanel());
 
         // List panel
         listScrollPane = new JScrollPane(list);
@@ -362,7 +362,7 @@ public class STLViewer extends JFrame implements IConstants
                 JOptionPane.showMessageDialog(null,
                     new AboutBoxPanel(TITLE + " " + VERSION,
                         "Written by Kenneth Evans, Jr.", "kenevans.net",
-                        "Copyright (c) 2014 Kenneth Evans"),
+                        "Copyright (c) 2014-2016 Kenneth Evans"),
                     "About", JOptionPane.PLAIN_MESSAGE);
             }
         });
@@ -480,8 +480,8 @@ public class STLViewer extends JFrame implements IConstants
                 try {
                     setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                     model = new STLFileModel(file.getPath());
-                    plot.clearPlot();
-                    plot.addModelToChart(model);
+                    stlPlot.clearPlot();
+                    stlPlot.addModelToChart(model);
                     updateInfoText(model);
                 } catch(Exception ex) {
                     String msg = "Error loading file: " + file.getPath();
@@ -628,7 +628,7 @@ public class STLViewer extends JFrame implements IConstants
 
         // Copy from the given settings.
         this.settings.copyFrom(settings);
-        plot.reset();
+        stlPlot.reset();
         if(!this.settings.getDefaultDirectory().equals(defaultDirectoryOld)) {
             findFileNames(settings.getDefaultDirectory());
         }

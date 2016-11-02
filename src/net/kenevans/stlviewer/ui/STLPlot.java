@@ -18,7 +18,9 @@ import net.kenevans.stlviewer.preferences.Settings;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.AbstractXYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
@@ -114,12 +116,12 @@ public class STLPlot implements IConstants
             new DataType(plot, D_SPEED_NAME, SPEED_INDEX,
                 Color.decode(D_SPEED_COLOR), settings.getSpeedVisible(),
                 settings.getSpeedRollingAvgCount()),
-            new DataType(plot, D_ELE_NAME, ELE_INDEX,
-                Color.decode(D_ELE_COLOR), settings.getEleVisible(),
-                settings.getEleRollingAvgCount()),
+            new DataType(plot, D_ELE_NAME, ELE_INDEX, Color.decode(D_ELE_COLOR),
+                settings.getEleVisible(), settings.getEleRollingAvgCount()),
             new HrDataType(plot, D_HR_ZONES_NAME, HR_ZONES_INDEX,
-                Color.decode(D_HR_ZONES_COLOR), settings.getHrZonesVisible(), 0),
-        // Comment to keep brace on a separate line
+                Color.decode(D_HR_ZONES_COLOR), settings.getHrZonesVisible(),
+                0),
+            // Comment to keep brace on a separate line
         };
 
         return chart;
@@ -196,8 +198,8 @@ public class STLPlot implements IConstants
                 type.setVisible(selected);
                 XYPlot plot = type.getPlot();
                 plot.getRangeAxis(axisIndex).setVisible(selected);
-                plot.setDataset(datasetIndex, selected ? type.getDataset()
-                    : null);
+                plot.setDataset(datasetIndex,
+                    selected ? type.getDataset() : null);
             }
         });
         menu.add(hrVisibleItem);
@@ -214,8 +216,8 @@ public class STLPlot implements IConstants
                 type.setVisible(selected);
                 XYPlot plot = type.getPlot();
                 plot.getRangeAxis(axisIndex).setVisible(selected);
-                plot.setDataset(datasetIndex, selected ? type.getDataset()
-                    : null);
+                plot.setDataset(datasetIndex,
+                    selected ? type.getDataset() : null);
             }
         });
         menu.add(hrZonesVisibleItem);
@@ -232,8 +234,8 @@ public class STLPlot implements IConstants
                 type.setVisible(selected);
                 XYPlot plot = type.getPlot();
                 plot.getRangeAxis(axisIndex).setVisible(selected);
-                plot.setDataset(datasetIndex, selected ? type.getDataset()
-                    : null);
+                plot.setDataset(datasetIndex,
+                    selected ? type.getDataset() : null);
             }
         });
         menu.add(speedVisibleItem);
@@ -250,8 +252,8 @@ public class STLPlot implements IConstants
                 type.setVisible(selected);
                 XYPlot plot = type.getPlot();
                 plot.getRangeAxis(axisIndex).setVisible(selected);
-                plot.setDataset(datasetIndex, selected ? type.getDataset()
-                    : null);
+                plot.setDataset(datasetIndex,
+                    selected ? type.getDataset() : null);
             }
         });
         menu.add(eleVisibleItem);
@@ -292,6 +294,20 @@ public class STLPlot implements IConstants
      * Removes all series from the plot.
      */
     public void clearPlot() {
+        XYPlot plot = chartPanel.getChart().getXYPlot();
+        if(plot != null) {
+            // This is apparently necessary so reset() works
+            plot.clearDomainAxes();
+            plot.clearRangeAxes();
+            // This is taken from ChartFactory.createTimeSeriesChart()
+            ValueAxis timeAxis = new DateAxis("Time");
+            timeAxis.setLowerMargin(0.02); // Reduce the default margins
+            timeAxis.setUpperMargin(0.02);
+            plot.setDomainAxis(timeAxis);
+            NumberAxis valueAxis = new NumberAxis("HR");
+            valueAxis.setAutoRangeIncludesZero(false); // Override default
+            plot.setRangeAxis(valueAxis);
+        }
         if(dataTypes == null) {
             return;
         }
@@ -348,12 +364,12 @@ public class STLPlot implements IConstants
             new DataType(plot, D_SPEED_NAME, SPEED_INDEX,
                 Color.decode(D_SPEED_COLOR), settings.getSpeedVisible(),
                 settings.getSpeedRollingAvgCount()),
-            new DataType(plot, D_ELE_NAME, ELE_INDEX,
-                Color.decode(D_ELE_COLOR), settings.getEleVisible(),
-                settings.getEleRollingAvgCount()),
+            new DataType(plot, D_ELE_NAME, ELE_INDEX, Color.decode(D_ELE_COLOR),
+                settings.getEleVisible(), settings.getEleRollingAvgCount()),
             new HrDataType(plot, D_HR_ZONES_NAME, HR_ZONES_INDEX,
-                Color.decode(D_HR_ZONES_COLOR), settings.getHrZonesVisible(), 0),
-        // Comment to keep brace on a separate line
+                Color.decode(D_HR_ZONES_COLOR), settings.getHrZonesVisible(),
+                0),
+            // Comment to keep brace on a separate line
         };
 
         // Add the model to the chart which causes it to recalculate
@@ -485,8 +501,8 @@ public class STLPlot implements IConstants
                     plot.setRenderer(datasetIndex, type.getRenderer());
                     break;
                 default:
-                    Utils.errMsg("Invalid data set datasetIndex:"
-                        + datasetIndex);
+                    Utils.errMsg(
+                        "Invalid data set datasetIndex:" + datasetIndex);
                     break;
                 }
                 // Set the visibility
