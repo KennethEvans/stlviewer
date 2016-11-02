@@ -15,6 +15,9 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import net.kenevans.core.utils.Utils;
 import net.kenevans.gpxcombined.ExtensionsType;
 import net.kenevans.gpxcombined.GpxType;
@@ -25,9 +28,6 @@ import net.kenevans.gpxcombined.TrksegType;
 import net.kenevans.gpxcombined.WptType;
 import net.kenevans.gpxcombined.parser.GPXParser;
 import net.kenevans.stlviewer.utils.GpxUtils;
-
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /*
  * Created on Jul 8, 2014
@@ -159,10 +159,10 @@ public class STLFileModel implements IConstants
                         speed = deltaTime > 0 ? 1000. * deltaLength / deltaTime
                             : 0;
                         // Convert from m/sec to mi/hr
-                        speedValsArray.add(speed * GpxUtils.M2MI
-                            / GpxUtils.SEC2HR);
-                        speedTimeValsArray.add(time
-                            - Math.round(.5 * deltaTime));
+                        speedValsArray
+                            .add(speed * GpxUtils.M2MI / GpxUtils.SEC2HR);
+                        speedTimeValsArray
+                            .add(time - Math.round(.5 * deltaTime));
                     }
                     prevTime = time;
                     prevLat = lat;
@@ -179,8 +179,8 @@ public class STLFileModel implements IConstants
                             trackPointExt = null;
                             if(object instanceof JAXBElement<?>) {
                                 JAXBElement<?> element = (JAXBElement<?>)object;
-                                if(element != null
-                                    && element.getValue() instanceof TrackPointExtensionT) {
+                                if(element != null && element
+                                    .getValue() instanceof TrackPointExtensionT) {
                                     trackPointExt = (TrackPointExtensionT)element
                                         .getValue();
                                 }
@@ -264,8 +264,8 @@ public class STLFileModel implements IConstants
     // min = array[i];
     // }
     // }
-    // System.out.println("  Min: " + min + "  " + new Date(min) + "  Max: "
-    // + max + "  " + new Date(max));
+    // System.out.println(" Min: " + min + " " + new Date(min) + " Max: "
+    // + max + " " + new Date(max));
     // }
 
     // // DEBUG
@@ -282,7 +282,7 @@ public class STLFileModel implements IConstants
     // min = array[i];
     // }
     // }
-    // System.out.println("  Min: " + min + "  Max: " + max);
+    // System.out.println(" Min: " + min + " Max: " + max);
     // }
 
     /**
@@ -361,7 +361,7 @@ public class STLFileModel implements IConstants
                     if(extensions != null) {
                         List<Object> objects = extensions.getAny();
                         for(Object object : objects) {
-                            // System.out.println("  " + object.getClass());
+                            // System.out.println(" " + object.getClass());
                             if(object instanceof Node) {
                                 Node node = (Node)object;
                                 System.out.println("  " + node.getNodeName());
@@ -369,9 +369,9 @@ public class STLFileModel implements IConstants
                                 int nChildren = children.getLength();
                                 for(int i = 0; i < nChildren; i++) {
                                     Node node1 = children.item(i);
-                                    System.out.println("    "
-                                        + node1.getNodeName() + " : "
-                                        + node1.getTextContent());
+                                    System.out
+                                        .println("    " + node1.getNodeName()
+                                            + " : " + node1.getTextContent());
                                 }
                             }
                         }
@@ -453,7 +453,7 @@ public class STLFileModel implements IConstants
         info += "Tracks: " + startDate + " to " + endDate + LS;
         info += String.format("Duration: %d hr %d min %d sec", durationHours,
             durationMin, durationSec) + LS;
-        double[] stats = null;
+        double[] stats = null, stats1 = null;
         if(nHrValues != 0) {
             info += "HR: " + startHrDate + " to " + endHrDate + LS;
             info += String.format("HR Duration: %d hr %d min %d sec",
@@ -478,8 +478,7 @@ public class STLFileModel implements IConstants
             if(stats != null) {
                 info += String.format(
                     "Speed Min=%.1f Speed Max=%.1f Speed Avg=%.1f mi/hr",
-                    stats[0], stats[1], stats[2])
-                    + LS;
+                    stats[0], stats[1], stats[2]) + LS;
             } else {
                 // Get simple average
                 stats = getSimpleStats(speedVals, speedTimeVals,
@@ -488,8 +487,8 @@ public class STLFileModel implements IConstants
                     info += String
                         .format(
                             "Speed Min=%.1f Speed Max=%.1f Speed Avg=%.1f mi/hr"
-                                + " (Simple Average)", stats[0], stats[1],
-                            stats[2])
+                                + " (Simple Average)",
+                            stats[0], stats[1], stats[2])
                         + LS;
                 }
             }
@@ -499,33 +498,38 @@ public class STLFileModel implements IConstants
                 / GpxUtils.SEC2HR;
             stats = getTimeAverageStats(speedVals, speedTimeVals, noMoveSpeed);
             if(stats != null) {
-                info += String
-                    .format("  Moving Speed Avg=%.1f mi/hr", stats[2]) + LS;
+                info += String.format("  Moving Speed Avg=%.1f mi/hr", stats[2])
+                    + LS;
             } else {
                 // Get simple average
                 stats = getSimpleStats(speedVals, speedTimeVals, noMoveSpeed);
                 if(stats != null) {
-                    info += String.format("  Moving Speed Avg=%.1f mi/hr"
-                        + " (Simple Average)", stats[2])
-                        + LS;
+                    info += String.format(
+                        "  Moving Speed Avg=%.1f mi/hr" + " (Simple Average)",
+                        stats[2]) + LS;
                 }
             }
 
         }
         if(eleVals.length != 0) {
             stats = getTimeAverageStats(eleVals, timeVals, -Double.MIN_VALUE);
+            stats1 = getEleStats(eleVals, timeVals);
             if(stats != null) {
-                info += String.format(
-                    "Ele Min=%.0f Ele Max=%.0f Ele Avg=%.1f ft", stats[0],
-                    stats[1], stats[2])
-                    + LS;
+                info += String.format("Ele Min=%.0f Ele Max=%.0f Ele Avg=%.0f ",
+                    stats[0], stats[1], stats[2]);
+            }
+            if(stats1 != null) {
+                info += String.format("Ele Gain=%.0f Ele Loss=%.0f ft",
+                    stats1[0], stats1[1]) + LS;
+            } else {
+                info += LS;
             }
         } else {
             // Get simple average
             stats = getSimpleStats(eleVals, timeVals, -Double.MIN_VALUE);
             if(stats != null) {
-                info += String.format(
-                    "Ele Min=%.0f Ele Max=%.0f Ele Avg=%.1f ft"
+                info += String
+                    .format("Ele Min=%.0f Ele Max=%.0f Ele Avg=%.1f ft"
                         + " (Simple Average)", stats[0], stats[1], stats[2])
                     + LS;
             }
@@ -598,9 +602,9 @@ public class STLFileModel implements IConstants
         // System.out.println("vals: " + vals.length + ", timeVals: "
         // + timeVals.length);
         if(vals.length != timeVals.length) {
-            Utils.errMsg("getTimeAverageStats: Array sizes (vals: "
-                + vals.length + ", timeVals: " + timeVals.length
-                + ") do not match");
+            Utils
+                .errMsg("getTimeAverageStats: Array sizes (vals: " + vals.length
+                    + ", timeVals: " + timeVals.length + ") do not match");
             return null;
         }
         int len = vals.length;
@@ -651,6 +655,47 @@ public class STLFileModel implements IConstants
         }
         sum /= (totalWeight);
         return new double[] {min, max, sum};
+    }
+
+    /**
+     * Gets the elevation statistics from the given values and time values.
+     * These include elevation gain and loss.
+     * 
+     * @param vals
+     * @param timeVals
+     * @param omitBelow Do not include values below this one.
+     * @return {gain, loss} or null on error.
+     */
+    public static double[] getEleStats(double[] vals, long[] timeVals) {
+        // System.out.println("vals: " + vals.length + ", timeVals: "
+        // + timeVals.length);
+        if(vals.length != timeVals.length) {
+            Utils.errMsg("getSimpleStats: Array sizes (vals: " + vals.length
+                + ", timeVals: " + timeVals.length + ") do not match");
+            return null;
+        }
+        int len = vals.length;
+        if(len == 0) {
+            return new double[] {0, 0};
+        }
+        double gain = 0;
+        double loss = 0;
+        double val;
+        int nVals = 0;
+        for(int i = 1; i < len; i++) {
+            val = vals[i] - vals[i - 1];
+            if(Double.isNaN(val)) continue;
+            nVals++;
+            if(val > 0) {
+                gain += val;
+            } else if(val < 0) {
+                loss += -val;
+            }
+        }
+        if(nVals == 0) {
+            return null;
+        }
+        return new double[] {gain, loss};
     }
 
     /**
@@ -783,7 +828,7 @@ public class STLFileModel implements IConstants
         // DEBUG
         // System.out.println();
         // System.out.println("Classpath");
-        // System.out.println(getClassPath("    "));
+        // System.out.println(getClassPath(" "));
         // System.out.println();
         // DEBUG
         System.out.println();
