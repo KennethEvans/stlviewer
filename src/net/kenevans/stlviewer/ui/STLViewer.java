@@ -58,6 +58,10 @@ import org.jfree.ui.RefineryUtilities;
  */
 public class STLViewer extends JFrame implements IConstants
 {
+    private static final String AUTHOR = "Written by Kenneth Evans, Jr.";
+    private static final String COPYRIGHT = "Copyright (c) 2014-2017 Kenneth Evans";
+    private static final String COMPANY = "kenevans.net";
+
     /**
      * Use this to determine if a file is loaded initially. Useful for
      * development. Not so good for deployment.
@@ -359,10 +363,9 @@ public class STLViewer extends JFrame implements IConstants
         menuItem.setText("About");
         menuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                JOptionPane.showMessageDialog(null,
-                    new AboutBoxPanel(TITLE + " " + VERSION,
-                        "Written by Kenneth Evans, Jr.", "kenevans.net",
-                        "Copyright (c) 2014-2016 Kenneth Evans"),
+                JOptionPane.showMessageDialog(
+                    null, new AboutBoxPanel(TITLE + " " + VERSION, AUTHOR,
+                        COMPANY, COPYRIGHT),
                     "About", JOptionPane.PLAIN_MESSAGE);
             }
         });
