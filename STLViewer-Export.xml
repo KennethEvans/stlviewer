@@ -7,40 +7,30 @@
     <property name="dir.workspace" value="${dir.buildfile}/.."/>
     <property name="dir.jarfile" value="C:/Deploy/STL Viewer"/>
     <target name="create_run_jar">
-        <jar destfile="${dir.jarfile}/STLViewer.jar">
+        <jar destfile="${dir.jarfile}/stlViewer.jar">
             <manifest>
                 <attribute name="Main-Class" value="net.kenevans.stlviewer.ui.STLViewer"/>
-                <attribute name="Class-Path" value=". STLViewer_lib/activation.jar STLViewer_lib/jaxb1-impl.jar STLViewer_lib/jaxb-api.jar STLViewer_lib/jsr173_1.0_api.jar STLViewer_lib/jaxb-impl.jar STLViewer_lib/jaxb-xjc.jar STLViewer_lib/jaxb1-impl-src.zip STLViewer_lib/jaxb-api-doc.zip STLViewer_lib/jaxb-api-src.zip STLViewer_lib/jaxb-impl.src.zip STLViewer_lib/jaxb-xjc.src.zip STLViewer_lib/sqlite-jdbc-3.8.7.jar STLViewer_lib/iText-2.1.5.jar STLViewer_lib/hamcrest-core-1.3.jar STLViewer_lib/jcommon-1.0.23.jar STLViewer_lib/jfreechart-1.0.19-experimental.jar STLViewer_lib/jfreechart-1.0.19-swt.jar STLViewer_lib/jfreechart-1.0.19.jar STLViewer_lib/jfreesvg-2.0.jar STLViewer_lib/junit-4.11.jar STLViewer_lib/orsoncharts-1.4-eval-nofx.jar STLViewer_lib/orsonpdf-1.6-eval.jar STLViewer_lib/servlet.jar STLViewer_lib/swtgraphics2d.jar"/>
+                <attribute name="Class-Path" value=". stlViewer_lib/activation.jar stlViewer_lib/jaxb1-impl.jar stlViewer_lib/jaxb-api.jar stlViewer_lib/jsr173_1.0_api.jar stlViewer_lib/jaxb-impl.jar stlViewer_lib/jaxb-xjc.jar stlViewer_lib/jaxb1-impl-src.zip stlViewer_lib/jaxb-api-doc.zip stlViewer_lib/jaxb-api-src.zip stlViewer_lib/jaxb-impl.src.zip stlViewer_lib/jaxb-xjc.src.zip stlViewer_lib/sqlite-jdbc-3.8.7.jar stlViewer_lib/jcommon-1.0.16.jar stlViewer_lib/jfreechart-1.0.13.jar"/>
             </manifest>
             <fileset dir="${dir.buildfile}/bin"/>
             <fileset dir="${dir.workspace}/net.kenevans.core.utils/bin"/>
             <fileset dir="${dir.workspace}/net.kenevans.gpx/bin"/>
         </jar>
-        <delete dir="${dir.jarfile}/STLViewer_lib"/>
-        <mkdir dir="${dir.jarfile}/STLViewer_lib"/>
-        <copy file="${dir.workspace}/net.kenevans.jaxb/activation.jar" todir="${dir.jarfile}/STLViewer_lib"/>
-        <copy file="${dir.workspace}/net.kenevans.jaxb/jaxb1-impl.jar" todir="${dir.jarfile}/STLViewer_lib"/>
-        <copy file="${dir.workspace}/net.kenevans.jaxb/jaxb-api.jar" todir="${dir.jarfile}/STLViewer_lib"/>
-        <copy file="${dir.workspace}/net.kenevans.jaxb/jsr173_1.0_api.jar" todir="${dir.jarfile}/STLViewer_lib"/>
-        <copy file="${dir.workspace}/net.kenevans.jaxb/jaxb-impl.jar" todir="${dir.jarfile}/STLViewer_lib"/>
-        <copy file="${dir.workspace}/net.kenevans.jaxb/jaxb-xjc.jar" todir="${dir.jarfile}/STLViewer_lib"/>
-        <copy file="${dir.workspace}/net.kenevans.jaxb/jaxb1-impl-src.zip" todir="${dir.jarfile}/STLViewer_lib"/>
-        <copy file="${dir.workspace}/net.kenevans.jaxb/jaxb-api-doc.zip" todir="${dir.jarfile}/STLViewer_lib"/>
-        <copy file="${dir.workspace}/net.kenevans.jaxb/jaxb-api-src.zip" todir="${dir.jarfile}/STLViewer_lib"/>
-        <copy file="${dir.workspace}/net.kenevans.jaxb/jaxb-impl.src.zip" todir="${dir.jarfile}/STLViewer_lib"/>
-        <copy file="${dir.workspace}/net.kenevans.jaxb/jaxb-xjc.src.zip" todir="${dir.jarfile}/STLViewer_lib"/>
-        <copy file="${dir.buildfile}/sqlite-jdbc-3.8.7.jar" todir="${dir.jarfile}/STLViewer_lib"/>
-        <copy file="${dir.workspace}/net.kenevans.jfreechart/iText-2.1.5.jar" todir="${dir.jarfile}/STLViewer_lib"/>
-        <copy file="${dir.workspace}/net.kenevans.jfreechart/hamcrest-core-1.3.jar" todir="${dir.jarfile}/STLViewer_lib"/>
-        <copy file="${dir.workspace}/net.kenevans.jfreechart/jcommon-1.0.23.jar" todir="${dir.jarfile}/STLViewer_lib"/>
-        <copy file="${dir.workspace}/net.kenevans.jfreechart/jfreechart-1.0.19-experimental.jar" todir="${dir.jarfile}/STLViewer_lib"/>
-        <copy file="${dir.workspace}/net.kenevans.jfreechart/jfreechart-1.0.19-swt.jar" todir="${dir.jarfile}/STLViewer_lib"/>
-        <copy file="${dir.workspace}/net.kenevans.jfreechart/jfreechart-1.0.19.jar" todir="${dir.jarfile}/STLViewer_lib"/>
-        <copy file="${dir.workspace}/net.kenevans.jfreechart/jfreesvg-2.0.jar" todir="${dir.jarfile}/STLViewer_lib"/>
-        <copy file="${dir.workspace}/net.kenevans.jfreechart/junit-4.11.jar" todir="${dir.jarfile}/STLViewer_lib"/>
-        <copy file="${dir.workspace}/net.kenevans.jfreechart/orsoncharts-1.4-eval-nofx.jar" todir="${dir.jarfile}/STLViewer_lib"/>
-        <copy file="${dir.workspace}/net.kenevans.jfreechart/orsonpdf-1.6-eval.jar" todir="${dir.jarfile}/STLViewer_lib"/>
-        <copy file="${dir.workspace}/net.kenevans.jfreechart/servlet.jar" todir="${dir.jarfile}/STLViewer_lib"/>
-        <copy file="${dir.workspace}/net.kenevans.jfreechart/swtgraphics2d.jar" todir="${dir.jarfile}/STLViewer_lib"/>
+        <delete dir="${dir.jarfile}/stlViewer_lib"/>
+        <mkdir dir="${dir.jarfile}/stlViewer_lib"/>
+        <copy file="${dir.workspace}/net.kenevans.jaxb/activation.jar" todir="${dir.jarfile}/stlViewer_lib"/>
+        <copy file="${dir.workspace}/net.kenevans.jaxb/jaxb1-impl.jar" todir="${dir.jarfile}/stlViewer_lib"/>
+        <copy file="${dir.workspace}/net.kenevans.jaxb/jaxb-api.jar" todir="${dir.jarfile}/stlViewer_lib"/>
+        <copy file="${dir.workspace}/net.kenevans.jaxb/jsr173_1.0_api.jar" todir="${dir.jarfile}/stlViewer_lib"/>
+        <copy file="${dir.workspace}/net.kenevans.jaxb/jaxb-impl.jar" todir="${dir.jarfile}/stlViewer_lib"/>
+        <copy file="${dir.workspace}/net.kenevans.jaxb/jaxb-xjc.jar" todir="${dir.jarfile}/stlViewer_lib"/>
+        <copy file="${dir.workspace}/net.kenevans.jaxb/jaxb1-impl-src.zip" todir="${dir.jarfile}/stlViewer_lib"/>
+        <copy file="${dir.workspace}/net.kenevans.jaxb/jaxb-api-doc.zip" todir="${dir.jarfile}/stlViewer_lib"/>
+        <copy file="${dir.workspace}/net.kenevans.jaxb/jaxb-api-src.zip" todir="${dir.jarfile}/stlViewer_lib"/>
+        <copy file="${dir.workspace}/net.kenevans.jaxb/jaxb-impl.src.zip" todir="${dir.jarfile}/stlViewer_lib"/>
+        <copy file="${dir.workspace}/net.kenevans.jaxb/jaxb-xjc.src.zip" todir="${dir.jarfile}/stlViewer_lib"/>
+        <copy file="${dir.buildfile}/sqlite-jdbc-3.8.7.jar" todir="${dir.jarfile}/stlViewer_lib"/>
+        <copy file="${dir.buildfile}/jcommon-1.0.16.jar" todir="${dir.jarfile}/stlViewer_lib"/>
+        <copy file="${dir.buildfile}/jfreechart-1.0.13.jar" todir="${dir.jarfile}/stlViewer_lib"/>
     </target>
 </project>

@@ -10,11 +10,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 
-import net.kenevans.core.utils.Utils;
-import net.kenevans.stlviewer.model.IConstants;
-import net.kenevans.stlviewer.model.STLFileModel;
-import net.kenevans.stlviewer.preferences.Settings;
-
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -27,6 +22,11 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.data.general.Series;
 import org.jfree.data.time.TimeSeriesCollection;
+
+import net.kenevans.core.utils.Utils;
+import net.kenevans.stlviewer.model.IConstants;
+import net.kenevans.stlviewer.model.STLFileModel;
+import net.kenevans.stlviewer.preferences.Settings;
 
 /*
  * Created on Jul 29, 2012
@@ -86,7 +86,6 @@ public class STLPlot implements IConstants
         subTitle = new TextTitle("No file loaded");
         subTitle.setFont(new Font("SansSerif", Font.PLAIN, 16));
         chart.addSubtitle(subTitle);
-        // chart.getPlot().setBackgroundPaint(Color.BLACK);
 
         // chart.getPlot().setDrawingSupplier(
         // new DefaultDrawingSupplier(zoneColors,
@@ -97,6 +96,13 @@ public class STLPlot implements IConstants
 
         // Define the panel before extending the popup menu
         chartPanel = new ChartPanel(chart);
+        // DEBUG
+        // chart.getPlot().setBackgroundPaint(Color.BLACK);
+        // chart.setBackgroundPaint(Color.GREEN);
+        // chartPanel.setBackground(Color.RED);
+        // System.out.println("chart.getPadding())=" + chart.getPadding());
+        // chart.setPadding(new RectangleInsets(00.0, 20.0, 0.0, 0.0));
+        // System.out.println("chart.getPadding())=" + chart.getPadding());
 
         // Add to the popup menu
         extendPopupMenu();
