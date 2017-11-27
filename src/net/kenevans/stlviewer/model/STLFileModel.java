@@ -57,6 +57,7 @@ public class STLFileModel implements IConstants
     private long endTime;
     private long startHrTime = Long.MAX_VALUE;
     private long endHrTime;
+    private double distance;
 
     SimpleDateFormat oruxMapsBpmFormatter;
 
@@ -155,6 +156,7 @@ public class STLFileModel implements IConstants
                         // Should be the second track point
                         deltaLength = GpxUtils.greatCircleDistance(prevLat,
                             prevLon, lat, lon);
+                        distance += deltaLength;
                         deltaTime = time - prevTime;
                         speed = deltaTime > 0 ? 1000. * deltaLength / deltaTime
                             : 0;
@@ -451,8 +453,12 @@ public class STLFileModel implements IConstants
         int hrDurationSec = (int)(hrDuration / 1000.) - hrDurationHours * 3600
             - hrDurationMin * 60;
         info += "Tracks: " + startDate + " to " + endDate + LS;
-        info += String.format("Duration: %d hr %d min %d sec", durationHours,
-            durationMin, durationSec) + LS;
+        info += String.format("Duration: %d hr %d min %d sec (%.0f sec)",
+            durationHours, durationMin, durationSec, duration / 1000.) + LS;
+        info += String.format("Distance: %.2f mi", distance * GpxUtils.M2MI)
+            + LS;
+        info += String.format("Simple Avg Speed: %.2f mi/hr",
+            distance / duration * 1000 * GpxUtils.M2MI / GpxUtils.SEC2HR) + LS;
         double[] stats = null, stats1 = null;
         if(nHrValues != 0) {
             info += "HR: " + startHrDate + " to " + endHrDate + LS;
@@ -815,6 +821,13 @@ public class STLFileModel implements IConstants
      */
     public int getnHrValues() {
         return nHrValues;
+    }
+
+    /**
+     * @return The value of distance.
+     */
+    public double getDistance() {
+        return distance;
     }
 
     /**
