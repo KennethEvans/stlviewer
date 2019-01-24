@@ -62,7 +62,7 @@ public class AddNamesToSTLTracks
         "yyyy-MM-dd");
 
     /**
-     * Generic method to get a file using a JFileChooder
+     * Generic method to get a file using a JFileChooser
      * 
      * @param defaultPath
      * @return the File or null if aborted.
