@@ -59,7 +59,7 @@ import org.jfree.ui.RefineryUtilities;
 public class STLViewer extends JFrame implements IConstants
 {
     private static final String AUTHOR = "Written by Kenneth Evans, Jr.";
-    private static final String COPYRIGHT = "Copyright (c) 2014-2017 Kenneth Evans";
+    private static final String COPYRIGHT = "Copyright (c) 2014-2019 Kenneth Evans";
     private static final String COMPANY = "kenevans.net";
 
     /**
