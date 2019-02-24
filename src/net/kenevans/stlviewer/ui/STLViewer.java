@@ -71,7 +71,7 @@ public class STLViewer extends JFrame implements IConstants
     public static final String LS = System.getProperty("line.separator");
 
     private Settings settings;
-
+    private PreferencesDialog preferencesDialog;;
     /** Keeps the last-used path for the file open dialog. */
     public String defaultOpenPath;
     /** Keeps the last-used path for the file save dialog. */
@@ -605,16 +605,18 @@ public class STLViewer extends JFrame implements IConstants
      * Brings up a dialog to set preferences.
      */
     private void setPreferences() {
-        PreferencesDialog dialog = new PreferencesDialog(this, this);
+        if(preferencesDialog == null) {
+            preferencesDialog = new PreferencesDialog(this, this);
+        }
         // For modal, use this and dialog.showDialog() instead of
         // dialog.setVisible(true)
         // dialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
-        dialog.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        preferencesDialog.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         URL url = STLViewer.class.getResource("/resources/STLViewer32x32.png");
         if(url != null) {
-            dialog.setIconImage(new ImageIcon(url).getImage());
+            preferencesDialog.setIconImage(new ImageIcon(url).getImage());
         }
-        dialog.setVisible(true);
+        preferencesDialog.setVisible(true);
         // This only returns on Cancel and always returns true. All actions are
         // done from the dialog.
         // dialog.showDialog();
