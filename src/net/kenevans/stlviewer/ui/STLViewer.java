@@ -449,7 +449,7 @@ public class STLViewer extends JFrame implements IConstants
                 return;
             }
             if(!dir.isDirectory()) {
-                Utils.errMsg("Not a diretory: " + dirName);
+                Utils.errMsg("Not a directory: " + dirName);
                 return;
             }
             settings.setDefaultDirectory(dirName);
