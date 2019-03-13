@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -223,6 +224,7 @@ public class STLViewer extends JFrame implements IConstants
         infoTextArea = new JTextArea();
         infoTextArea.setEditable(false);
         infoTextArea.setColumns(40);
+        infoTextArea.setFont(new Font(Font.DIALOG, Font.PLAIN, 12));
         JScrollPane infoScrollPane = new JScrollPane(infoTextArea);
         infoPanel.add(infoScrollPane, BorderLayout.CENTER);
 
@@ -589,7 +591,7 @@ public class STLViewer extends JFrame implements IConstants
     private void showInfo() {
         if(model != null) {
             String info = model.getInfo();
-            scrolledTextMsg(null, info, "File Info", 600, 400);
+            scrolledTextMsg(this, info, "File Info", 600, 400);
         }
     }
 
@@ -653,6 +655,7 @@ public class STLViewer extends JFrame implements IConstants
         JTextArea textArea = new JTextArea(message);
         textArea.setEditable(false);
         textArea.setCaretPosition(0);
+        textArea.setFont(new Font(Font.DIALOG, Font.PLAIN, 12));
 
         JScrollPane scrollPane = new JScrollPane(textArea);
         jPanel.add(scrollPane, BorderLayout.CENTER);
