@@ -1,7 +1,6 @@
 package net.kenevans.stlviewer.preferences;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -14,6 +13,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -24,7 +24,7 @@ import net.kenevans.stlviewer.ui.STLViewer;
 
 /**
  * PreferencesDialog is a dialog to set the Preferences for STLViewer. It only
- * returns after Cancel. It can save the values to the preference store or set
+ * returns after Done. It can save the values to the preference store or set
  * them in the viewer. In either case it remains visible.
  * 
  * @author Kenneth Evans, Jr.
@@ -75,8 +75,8 @@ public class PreferencesDialog extends JDialog implements IConstants
     /**
      * Constructor
      */
-    public PreferencesDialog(Component parent, STLViewer viewer) {
-        super();
+    public PreferencesDialog(JFrame parent, STLViewer viewer) {
+        super(parent);
         this.viewer = viewer;
         if(viewer == null) {
             Utils.errMsg("Viewer is null");
@@ -840,7 +840,7 @@ public class PreferencesDialog extends JDialog implements IConstants
         buttonPanel.add(button);
 
         button = new JButton();
-        button.setText("Cancel");
+        button.setText("Done");
         button.setToolTipText("Close the dialog and do nothing.");
         button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent ev) {
@@ -1158,7 +1158,7 @@ public class PreferencesDialog extends JDialog implements IConstants
 
     /**
      * Shows the dialog and returns whether it was successful or not. However
-     * currently it is always successful and returns only on Cancel.
+     * currently it is always successful and returns only on Done.
      * 
      * @return
      */
